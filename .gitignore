@@ -1,0 +1,23 @@
+# Ignore .dat and .txt files
+*.dat
+*.txt
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+#Ignore logs and temporaty files
+*.log
+tmp/
+
+#Ignore png files
+*.png
+
+#Ignore json files
+*.json
+
+#Ignore egg-info files
+AUTO_DIFF_PACK.egg-info/
+
+#Ignore csv files
+*.csv

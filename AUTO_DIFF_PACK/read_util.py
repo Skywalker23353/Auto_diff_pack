@@ -1,0 +1,10 @@
+import jax.numpy as jnp
+# --------------Fucntion to read input file-------------------
+def read_array_from_file(filename):
+    print("Reading input file:",filename)
+    with open(filename, 'r') as file:
+        length = int(file.readline().strip())
+        array = jnp.array([float(file.readline().strip()) for _ in range(length)], dtype=jnp.float64)
+    print("File reading done")
+    return array
+#--------------------------------------------------------------------------------------
