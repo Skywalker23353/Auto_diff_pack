@@ -46,7 +46,7 @@ def main():
     scalefactor = 1
     eps = 0 
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
-    '''# Compute C_rho---------------------------------------------------
+    # Compute C_rho---------------------------------------------------
     C_rho = fw.return_wT_deriv(A,q[0],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
     C_rho = C_rho*rho_ref*V_ref/Q_bar
     n = int(len(C_rho))
@@ -77,14 +77,14 @@ def main():
                     f.write("%e\n" % item)
             del C_Y
 
-    '''# Compute omega_dot_rho---------------------------------------------------
+    # Compute omega_dot_rho---------------------------------------------------
     for i in range(len(species_idx)):
         omega_dot_rho = fw.return_omega_dot_k(A,species_idx[i],q[0],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
         omega_dot_rho = (omega_dot_rho*rho_ref)/(omega_dot_k_scaling)
         n = int(len(omega_dot_rho))
-        with open(write_path + "/omega_dot_rho_" + str(species_idx[i]) + ".txt", 'w') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_rho.txt", 'w') as f:
             f.write("%d\n" % n)
-        with open(write_path + "/omega_dot_rho_" + str(species_idx[i]) + ".txt", 'a') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_rho.txt", 'a') as f:
             for item in omega_dot_rho:
                 f.write("%e\n" % item)
         del omega_dot_rho
@@ -93,9 +93,9 @@ def main():
         omega_dot_T = fw.return_omega_dot_k(A,species_idx[i],q[1],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
         omega_dot_T = (omega_dot_T*T_ref)/(omega_dot_k_scaling)
         n = int(len(omega_dot_T))
-        with open(write_path + "/omega_dot_T_" + str(species_idx[i]) + ".txt", 'w') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_T.txt", 'w') as f:
             f.write("%d\n" % n)
-        with open(write_path + "/omega_dot_T_" + str(species_idx[i]) + ".txt", 'a') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_T.txt", 'a') as f:
             for item in omega_dot_T:
                 f.write("%e\n" % item)
         del omega_dot_T
@@ -105,9 +105,9 @@ def main():
             omega_dot_Y = fw.return_omega_dot_k(A,species_idx[i],q[j],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
             omega_dot_Y = (omega_dot_Y)/(omega_dot_k_scaling)
             n = int(len(omega_dot_Y))
-            with open(write_path + "/omega_dot_Y_" + str(species_idx[i]) + "_" + str(j-2) + ".txt", 'w') as f:
+            with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_Y" + str(j-2) + ".txt", 'w') as f:
                 f.write("%d\n" % n)
-            with open(write_path + "/omega_dot_Y_" + str(species_idx[i]) + "_" + str(j-2) + ".txt", 'a') as f:
+            with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_Y" + str(j-2) + ".txt", 'a') as f:
                 for item in omega_dot_Y:
                     f.write("%e\n" % item)
             del omega_dot_Y
