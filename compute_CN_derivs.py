@@ -6,18 +6,18 @@ import jax.numpy as jnp
 
 #Compute derivatives
 def main():
-    filename_A_Arrhenius = r"docs/pre-exponential_A.txt"
+    filename_A_Arrhenius = r"./pre-exponential_A.txt"
     with open(filename_A_Arrhenius, 'r') as file:
         A = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    filename_Qbar = r"docs/Mean_Qbar.txt"
+    filename_Qbar = r"./Mean_Qbar.txt"
     with open(filename_Qbar, 'r') as file:
         Q_bar = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    read_path = r"docs/FEHydro_P1"
-    # read_path = r"../.FEHydro_P1"
-    write_path = r"docs/Derivs"
-    # write_path = r"../.FEHydro/Baseflow_CN_P1"
+    #read_path = r"docs/FEHydro_P1"
+    read_path = r"../.FEHydro_P1"
+    #write_path = r"docs/Derivs"
+    write_path = r"../.FEHydro/Auto_diff"
     os.makedirs(write_path, exist_ok=True) 
     rho_ref = 0.4237
     T_ref = 800#K
