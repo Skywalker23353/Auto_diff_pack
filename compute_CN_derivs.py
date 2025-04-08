@@ -82,9 +82,9 @@ def main():
         omega_dot_rho = fw.return_omega_dot_k(A,species_idx[i],q[0],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
         omega_dot_rho = (omega_dot_rho*rho_ref)/(omega_dot_k_scaling)
         n = int(len(omega_dot_rho))
-        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_rho.txt", 'w') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i] + 1) + "_rho.txt", 'w') as f:
             f.write("%d\n" % n)
-        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_rho.txt", 'a') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i] + 1) + "_rho.txt", 'a') as f:
             for item in omega_dot_rho:
                 f.write("%e\n" % item)
         del omega_dot_rho
@@ -93,9 +93,9 @@ def main():
         omega_dot_T = fw.return_omega_dot_k(A,species_idx[i],q[1],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
         omega_dot_T = (omega_dot_T*T_ref)/(omega_dot_k_scaling)
         n = int(len(omega_dot_T))
-        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_T.txt", 'w') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i] + 1) + "_T.txt", 'w') as f:
             f.write("%d\n" % n)
-        with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_T.txt", 'a') as f:
+        with open(write_path + "/omega_dot_" + str(species_idx[i] + 1) + "_T.txt", 'a') as f:
             for item in omega_dot_T:
                 f.write("%e\n" % item)
         del omega_dot_T
@@ -105,9 +105,9 @@ def main():
             omega_dot_Y = fw.return_omega_dot_k(A,species_idx[i],q[j],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
             omega_dot_Y = (omega_dot_Y)/(omega_dot_k_scaling)
             n = int(len(omega_dot_Y))
-            with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_Y" + str(j-2) + ".txt", 'w') as f:
+            with open(write_path + "/omega_dot_" + str(species_idx[i] + 1) + "_Y" + str(j-1) + ".txt", 'w') as f:
                 f.write("%d\n" % n)
-            with open(write_path + "/omega_dot_" + str(species_idx[i]) + "_Y" + str(j-2) + ".txt", 'a') as f:
+            with open(write_path + "/omega_dot_" + str(species_idx[i] + 1) + "_Y" + str(j-1) + ".txt", 'a') as f:
                 for item in omega_dot_Y:
                     f.write("%e\n" % item)
             del omega_dot_Y
