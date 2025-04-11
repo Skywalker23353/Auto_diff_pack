@@ -14,16 +14,17 @@ def main():
     with open(filename_Qbar, 'r') as file:
         Q_bar = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    #read_path = r"docs/FEHydro_P1"
-    read_path = r"../.FEHydro_P1"
-    #write_path = r"docs/Derivs"
-    write_path = r"../.FEHydro/Auto_diff"
+    read_path = r"docs/FEHydro_P1"
+    #read_path = r"../.FEHydro_P1"
+    write_path = r"docs/Derivs"
+    #write_path = r"../.FEHydro/Auto_diff"
     os.makedirs(write_path, exist_ok=True) 
     rho_ref = 0.4237
     T_ref = 800#K
     l_ref = 2e-3#m
     U_ref = 65#m/s
     V_ref = l_ref**3
+    Cp_ref = 1100e3 #J/kg-K
  
     rhoM = rfu.read_array_from_file(os.path.join(read_path ,'rhobase.txt'))
     rhoM = rho_ref * rhoM
@@ -48,6 +49,7 @@ def main():
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
     # Compute C_rho---------------------------------------------------
     C_rho = fw.return_wT_deriv(A,q[0],rhoM, TM, Y0M, Y1M, Y2M, Y3M)
+    omega_dot_T_rho = C_rho * rho_ref * Cp_ref * T_ref / (l_ref * U_ref) 
     C_rho = C_rho*rho_ref*V_ref/Q_bar
     n = int(len(C_rho))
     with open(write_path + "/CN_rho.txt", 'w') as f:
@@ -56,8 +58,15 @@ def main():
         for item in C_rho:
             f.write("%e\n" % item)
     del C_rho
+    with open(write_path + "/omega_dot_T_rho.txt", 'w') as f:
+        f.write("%d\n" % n)
+    with open(write_path + "/omega_dot_T_rho.txt", 'a') as f:
+        for item in omega_dot_T_rho:
+            f.write("%e\n" % item)
+    del omega_dot_T_rho
     # # %Compute C_T---------------------------------------------------
     C_T = fw.return_wT_deriv(A,q[1], rhoM, TM, Y0M, Y1M, Y2M, Y3M)
+    omega_dot_T_T = C_T * rho_ref * Cp_ref * T_ref / (l_ref * U_ref)
     C_T = C_T*T_ref*V_ref/Q_bar
     with open(write_path + "/CN_T.txt", 'w') as f:
         f.write("%d\n" % n)
@@ -65,9 +74,16 @@ def main():
         for item in C_T:
             f.write("%e\n" % item)
     del C_T
+    with open(write_path + "/omega_dot_T_T.txt", 'w') as f:
+        f.write("%d\n" % n)
+    with open(write_path + "/omega_dot_T_T.txt", 'a') as f:
+        for item in omega_dot_T_T:
+            f.write("%e\n" % item)
+    del omega_dot_T_T
     # %Compute C_Y---------------------------------------------------
     for k in range(2, (len(Y)+2)):
             C_Y = fw.return_wT_deriv(A, q[k], rhoM, TM, Y0M, Y1M, Y2M, Y3M)
+            omega_dot_T_Y = C_Y * rho_ref * Cp_ref * T_ref / (l_ref * U_ref)
             C_Y = C_Y*V_ref/Q_bar
             # Increase the size of C_sq_Y by 1 and insert the length as the first element
             with open(write_path + "/CN_Y" + str(k-1) + ".txt", 'w') as f:
@@ -76,6 +92,12 @@ def main():
                 for item in C_Y:
                     f.write("%e\n" % item)
             del C_Y
+            with open(write_path + "/omega_dot_T_Y" + str(k-1) + ".txt", 'w') as f:
+                f.write("%d\n" % n)
+            with open(write_path + "/omega_dot_T_Y" + str(k-1) + ".txt", 'a') as f:
+                for item in omega_dot_T_Y:
+                    f.write("%e\n" % item)
+            del omega_dot_T_Y
 
     # Compute omega_dot_rho---------------------------------------------------
     for i in range(len(species_idx)):
