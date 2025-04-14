@@ -30,15 +30,10 @@ def main():
     TM = rfu.read_array_from_file(os.path.join(read_path ,'Tbase.txt'))
     TM = T_ref * TM
     Y1M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase1.txt'))
-    Y1M = Y1M
     Y2M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase2.txt'))
-    Y2M = Y2M
     Y3M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase3.txt'))
-    Y3M = Y3M
     Y4M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase4.txt'))
-    Y4M = Y4M
     Y5M = 1 - (Y1M + Y2M + Y3M + Y4M)
-    Y = [Y1M,Y2M,Y3M,Y4M]
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
     omega_dot_T_scaling = (rho_ref*Cp_ref*T_ref*U_ref)/l_ref
