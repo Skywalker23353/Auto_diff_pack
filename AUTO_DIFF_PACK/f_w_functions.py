@@ -6,6 +6,7 @@ import jax
 Ea = 31.588e3 # cal/mol
 Ea = Ea*4.184 # J/mol
 R = 8.314 # J/molK
+A = 4.86775e+08
 Ta = Ea/R # K
 a_1 = 1.0
 a_2 = 1.0
@@ -52,38 +53,38 @@ def return_wT_deriv(A,var_idx, rho, T, *Y):
      wT_deriv = -wT_deriv
      return wT_deriv
 # ---------------------------------------------------
-def return_omega_dot_k(A, k, q, rho, T, *Y):
-    print("Computing omega_dot_k for species = ",k)
-    omega_dot_k = jnp.zeros(len(rho), dtype=jnp.float64)
-    wk_deriv = jax.jacfwd(w,q)
-    wk_deriv_at_qbar = wk_deriv(A, k, rho, T, *Y)
-    wk_deriv_at_qbar = jnp.diag(wk_deriv_at_qbar) #picking only the diagonal elements
-    omega_dot_k = nu_k[k]*W_k[k]*wk_deriv_at_qbar
-    return omega_dot_k
+# def return_omega_dot_k(A, k, q, rho, T, *Y):
+#     print("Computing omega_dot_k for species = ",k)
+#     omega_dot_k = jnp.zeros(len(rho), dtype=jnp.float64)
+#     wk_deriv = jax.jacfwd(w,q)
+#     wk_deriv_at_qbar = wk_deriv(A, k, rho, T, *Y)
+#     wk_deriv_at_qbar = jnp.diag(wk_deriv_at_qbar) #picking only the diagonal elements
+#     omega_dot_k = nu_k[k]*W_k[k]*wk_deriv_at_qbar
+#     return omega_dot_k
 # ---------------------------------------------------
-# def domega_dot_drho_actual_deriv(A,rho, T, *Y):
+def domega_dot_drho_actual_deriv(rho, T, Y1, Y2, Y3, Y4):
    
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    wmol = (KinP[1]+KinP[2])  * rateConst * (rho**(KinP[1]+KinP[2]-1)) * ((Y[0]/W_k[0])**KinP[1]) * (((Y[1]/W_k[1]))**KinP[2])
-#    return wmol
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   wmol = (KinP[1]+KinP[2])  * rateConst * (rho**(KinP[1]+KinP[2]-1)) * ((Y1/W_k[0])**KinP[1]) * (((Y2/W_k[1]))**KinP[2])
+   return wmol
 
-# def domega_dot_dT_actual_deriv(A,rho, T, *Y):
+def domega_dot_dT_actual_deriv(rho, T, Y1, Y2, Y3, Y4):
    
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    rateConst = KinP[0]*rateConst/(T**2)
-#    wmol = rateConst * ((rho*(Y[0]/W_k[0]))**KinP[1]) * ((rho*(Y[1]/W_k[1]))**KinP[2])
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   rateConst = KinP[0]*rateConst/(T**2)
+   wmol = rateConst * ((rho*(Y1/W_k[0]))**KinP[1]) * ((rho*(Y2/W_k[1]))**KinP[2])
    
-#    return wmol
+   return wmol
 
-# def domega_dot_dY0_actual_deriv(A,rho, T, *Y):
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    wmol = rateConst * ((rho*(1/W_k[0]))**KinP[1]) * ((rho*(Y[1]/W_k[1]))**KinP[2])
+def domega_dot_dY1_actual_deriv(rho, T, Y1, Y2, Y3, Y4):
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   wmol = rateConst * ((rho*(1/W_k[0]))**KinP[1]) * ((rho*(Y2/W_k[1]))**KinP[2])
    
-#    return wmol
+   return wmol
 
-# def domega_dot_dY1_actual_deriv(A,rho, T, *Y):
+def domega_dot_dY2_actual_deriv(rho, T, Y1, Y2, Y3, Y4):
 
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    wmol = rateConst * ((rho*(Y[0]/W_k[0]))**KinP[1]) * ((rho*(1/W_k[1]))**KinP[2])
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   wmol = rateConst * ((rho*(Y1/W_k[0]))**KinP[1]) * ((rho*(1/W_k[1]))**KinP[2])
    
-#    return wmol
+   return wmol
