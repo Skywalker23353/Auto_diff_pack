@@ -41,6 +41,7 @@ def main():
     Y = [Y1M,Y2M,Y3M,Y4M]
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
+    omega_dot_T_scaling = (rho_ref*Cp_ref*T_ref*U_ref)/l_ref
 
     # Compute domega_dot_k_drho_terms---------------------------------------------------
     domega_dot_CH4_drho = jnp.diag(jax.jacfwd(cstf.omega_dot_CH4,0)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
@@ -71,7 +72,7 @@ def main():
     domega_dot_T_drho = cstf.HRR_differentials(domega_dot_CH4_drho, domega_dot_O2_drho, domega_dot_CO2_drho, domega_dot_H2O_drho, domega_dot_N2_drho)
 
     cn_rho = domega_dot_T_drho * rho_ref * V_ref / Q_bar
-    domega_dot_T_drho = (domega_dot_T_drho*rho_ref*Cp_ref*T_ref)/(l_ref*U_ref)
+    domega_dot_T_drho = (domega_dot_T_drho*rho_ref)/(omega_dot_T_scaling)
     
     wfu.write_to_file(write_path, "domega_dot_T_drho", domega_dot_T_drho)
     wfu.write_to_file(write_path, "CN_rho", cn_rho)
@@ -111,7 +112,7 @@ def main():
     domega_dot_T_dT = cstf.HRR_differentials(domega_dot_CH4_dT, domega_dot_O2_dT, domega_dot_CO2_dT, domega_dot_H2O_dT, domega_dot_N2_dT)
 
     cn_T = (domega_dot_T_dT * V_ref * T_ref) / Q_bar
-    domega_dot_T_dT = (domega_dot_T_dT*rho_ref*Cp_ref*T_ref)/(l_ref*U_ref)
+    domega_dot_T_dT = (domega_dot_T_dT*T_ref)/(omega_dot_T_scaling)
     
     wfu.write_to_file(write_path, "domega_dot_T_dT", domega_dot_T_dT)
     wfu.write_to_file(write_path, "CN_T", cn_T)
@@ -151,7 +152,7 @@ def main():
     domega_dot_T_dY1 = cstf.HRR_differentials(domega_dot_CH4_dY1, domega_dot_O2_dY1, domega_dot_CO2_dY1, domega_dot_H2O_dY1, domega_dot_N2_dY1)
 
     cn_Y1 = domega_dot_T_dY1 * V_ref / Q_bar
-    domega_dot_T_dY1 = (domega_dot_T_dY1*rho_ref*Cp_ref*T_ref)/(l_ref*U_ref)
+    domega_dot_T_dY1 = (domega_dot_T_dY1)/(omega_dot_T_scaling)
     
     wfu.write_to_file(write_path, "domega_dot_T_dY1", domega_dot_T_dY1)
     wfu.write_to_file(write_path, "CN_Y1", cn_Y1)
@@ -191,7 +192,7 @@ def main():
     domega_dot_T_dY2 = cstf.HRR_differentials(domega_dot_CH4_dY2, domega_dot_O2_dY2, domega_dot_CO2_dY2, domega_dot_H2O_dY2, domega_dot_N2_dY2)
     
     cn_Y2 = domega_dot_T_dY2 * V_ref / Q_bar
-    domega_dot_T_dY2 = (domega_dot_T_dY2*rho_ref*Cp_ref*T_ref)/(l_ref*U_ref)
+    domega_dot_T_dY2 = (domega_dot_T_dY2)/(omega_dot_T_scaling)
     
     wfu.write_to_file(write_path, "domega_dot_T_dY2", domega_dot_T_dY2)
     wfu.write_to_file(write_path, "CN_Y2", cn_Y2)
@@ -231,7 +232,7 @@ def main():
     domega_dot_T_dY3 = cstf.HRR_differentials(domega_dot_CH4_dY3, domega_dot_O2_dY3, domega_dot_CO2_dY3, domega_dot_H2O_dY3, domega_dot_N2_dY3)
     
     cn_Y3 = domega_dot_T_dY3 * V_ref / Q_bar
-    domega_dot_T_dY3 = (domega_dot_T_dY3*rho_ref*Cp_ref*T_ref)/(l_ref*U_ref)
+    domega_dot_T_dY3 = (domega_dot_T_dY3)/(omega_dot_T_scaling)
     
     wfu.write_to_file(write_path, "domega_dot_T_dY3", domega_dot_T_dY3)
     wfu.write_to_file(write_path, "CN_Y3", cn_Y3)
@@ -271,7 +272,7 @@ def main():
     domega_dot_T_dY4 = cstf.HRR_differentials(domega_dot_CH4_dY4, domega_dot_O2_dY4, domega_dot_CO2_dY4, domega_dot_H2O_dY4, domega_dot_N2_dY4)
     
     cn_Y4 = domega_dot_T_dY4 * V_ref / Q_bar
-    domega_dot_T_dY4 = (domega_dot_T_dY4*rho_ref*Cp_ref*T_ref)/(l_ref*U_ref)
+    domega_dot_T_dY4 = (domega_dot_T_dY4)/(omega_dot_T_scaling)
     
     wfu.write_to_file(write_path, "domega_dot_T_dY4", domega_dot_T_dY4)
     wfu.write_to_file(write_path, "CN_Y4", cn_Y4)
@@ -311,7 +312,7 @@ def main():
     domega_dot_T_dY5 = cstf.HRR_differentials(domega_dot_CH4_dY5, domega_dot_O2_dY5, domega_dot_CO2_dY5, domega_dot_H2O_dY5, domega_dot_N2_dY5)
     
     cn_Y5 = domega_dot_T_dY5 * V_ref / Q_bar
-    domega_dot_T_dY5 = (domega_dot_T_dY5*rho_ref*Cp_ref*T_ref)/(l_ref*U_ref)
+    domega_dot_T_dY5 = (domega_dot_T_dY5)/(omega_dot_T_scaling)
     
     wfu.write_to_file(write_path, "domega_dot_T_dY5", domega_dot_T_dY5)
     wfu.write_to_file(write_path, "CN_Y5", cn_Y5)
