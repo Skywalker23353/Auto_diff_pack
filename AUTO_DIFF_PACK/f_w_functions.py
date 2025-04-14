@@ -61,29 +61,29 @@ def return_omega_dot_k(A, k, q, rho, T, *Y):
     omega_dot_k = nu_k[k]*W_k[k]*wk_deriv_at_qbar
     return omega_dot_k
 # ---------------------------------------------------
-# def domega_dot_drho_actual_deriv(A,rho, T, *Y):
+def domega_dot_drho_actual_deriv(A,rho, T, *Y):
    
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    wmol = (KinP[1]+KinP[2])  * rateConst * (rho**(KinP[1]+KinP[2]-1)) * ((Y[0]/W_k[0])**KinP[1]) * (((Y[1]/W_k[1]))**KinP[2])
-#    return wmol
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   wmol = (KinP[1]+KinP[2])  * rateConst * (rho**(KinP[1]+KinP[2]-1)) * ((Y[0]/W_k[0])**KinP[1]) * (((Y[1]/W_k[1]))**KinP[2])
+   return wmol
 
-# def domega_dot_dT_actual_deriv(A,rho, T, *Y):
+def domega_dot_dT_actual_deriv(A,rho, T, *Y):
    
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    rateConst = KinP[0]*rateConst/(T**2)
-#    wmol = rateConst * ((rho*(Y[0]/W_k[0]))**KinP[1]) * ((rho*(Y[1]/W_k[1]))**KinP[2])
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   rateConst = KinP[0]*rateConst/(T**2)
+   wmol = rateConst * ((rho*(Y[0]/W_k[0]))**KinP[1]) * ((rho*(Y[1]/W_k[1]))**KinP[2])
    
-#    return wmol
+   return wmol
 
-# def domega_dot_dY0_actual_deriv(A,rho, T, *Y):
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    wmol = rateConst * ((rho*(1/W_k[0]))**KinP[1]) * ((rho*(Y[1]/W_k[1]))**KinP[2])
+def domega_dot_dY1_actual_deriv(A,rho, T, *Y):
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   wmol = rateConst * ((rho*(1/W_k[0]))**KinP[1]) * ((rho*(Y[1]/W_k[1]))**KinP[2])
    
-#    return wmol
+   return wmol
 
-# def domega_dot_dY1_actual_deriv(A,rho, T, *Y):
+def domega_dot_dY2_actual_deriv(A,rho, T, *Y):
 
-#    rateConst  = A * jnp.exp(-KinP[0]/T)
-#    wmol = rateConst * ((rho*(Y[0]/W_k[0]))**KinP[1]) * ((rho*(1/W_k[1]))**KinP[2])
+   rateConst  = A * jnp.exp(-KinP[0]/T)
+   wmol = rateConst * ((rho*(Y[0]/W_k[0]))**KinP[1]) * ((rho*(1/W_k[1]))**KinP[2])
    
-#    return wmol
+   return wmol

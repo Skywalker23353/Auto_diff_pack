@@ -6,11 +6,11 @@ import jax.numpy as jnp
 
 #Compute derivatives
 def main():
-    filename_A_Arrhenius = r"docs/pre-exponential_A.txt"
+    filename_A_Arrhenius = r"pre-exponential_A.txt"
     with open(filename_A_Arrhenius, 'r') as file:
         A = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    filename_Qbar = r"docs/Mean_Qbar.txt"
+    filename_Qbar = r"Mean_Qbar.txt"
     with open(filename_Qbar, 'r') as file:
         Q_bar = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
@@ -46,7 +46,7 @@ def main():
     #Y5M = Y5M
 
     Y = [Y0M,Y1M,Y2M,Y3M]
-    species_idx = [0,1,2,3] #CH4, O2, CO2, H2O
+    species_idx = [1,2,3,4] #CH4, O2, CO2, H2O
     q = [2,3,4,5,6,7] # q[0] = rho, q[1] = T, q[2] = Y0, q[3] = Y1, q[4] = Y2, q[5] = Y3
     scalefactor = 1
     eps = 0 
@@ -56,9 +56,9 @@ def main():
     dwk_drho_sp0 =  nu_k[0]*W_k[0]*fw.domega_dot_drho_actual_deriv(A,rhoM, TM, Y0M, Y1M, Y2M, Y3M)
     dwk_drho_sp0 = (dwk_drho_sp0*rho_ref)/(omega_dot_k_scaling)
     n = int(len(dwk_drho_sp0))
-    with open(write_path + "/omega_dot_rho_" + str(species_idx[0]) + "_actual.txt", 'w') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_drho_actual.txt", 'w') as f:
         f.write("%d\n" % n)
-    with open(write_path + "/omega_dot_rho_" + str(species_idx[0]) + "_actual.txt", 'a') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_drho_actual.txt", 'a') as f:
         for item in dwk_drho_sp0:
             f.write("%e\n" % item)
     del dwk_drho_sp0
@@ -66,19 +66,29 @@ def main():
     dwk_dT_sp0 =  nu_k[0]*W_k[0]*fw.domega_dot_dT_actual_deriv(A,rhoM, TM, Y0M, Y1M, Y2M, Y3M)
     dwk_dT_sp0 = (dwk_dT_sp0*T_ref)/(omega_dot_k_scaling)
     n = int(len(dwk_dT_sp0))
-    with open(write_path + "/omega_dot_T_" + str(species_idx[0]) + "_actual.txt", 'w') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_dT_actual.txt", 'w') as f:
         f.write("%d\n" % n)
-    with open(write_path + "/omega_dot_T_" + str(species_idx[0]) + "_actual.txt", 'a') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_dT_actual.txt", 'a') as f:
         for item in dwk_dT_sp0:
             f.write("%e\n" % item)  
     del dwk_dT_sp0
 
-    dwk_dY_sp0 =  nu_k[0]*W_k[0]*fw.domega_dot_dY0_actual_deriv(A,rhoM, TM, Y0M, Y1M, Y2M, Y3M)
+    dwk_dY_sp0 =  nu_k[0]*W_k[0]*fw.domega_dot_dY1_actual_deriv(A,rhoM, TM, Y0M, Y1M, Y2M, Y3M)
     dwk_dY_sp0 = (dwk_dY_sp0)/(omega_dot_k_scaling)
     n = int(len(dwk_dY_sp0))
-    with open(write_path + "/omega_dot_Y0_" + str(species_idx[0]) + "_actual.txt", 'w') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_dY1_actual.txt", 'w') as f:
         f.write("%d\n" % n)
-    with open(write_path + "/omega_dot_Y0_" + str(species_idx[0]) + "_actual.txt", 'a') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_dY1_actual.txt", 'a') as f:
+        for item in dwk_dY_sp0:
+            f.write("%e\n" % item)
+    del dwk_dY_sp0
+
+    dwk_dY_sp0 =  nu_k[0]*W_k[0]*fw.domega_dot_dY2_actual_deriv(A,rhoM, TM, Y0M, Y1M, Y2M, Y3M)
+    dwk_dY_sp0 = (dwk_dY_sp0)/(omega_dot_k_scaling)
+    n = int(len(dwk_dY_sp0))
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_dY2_actual.txt", 'w') as f:
+        f.write("%d\n" % n)
+    with open(write_path + "/domega_dot_" + str(species_idx[0]) + "_dY2_actual.txt", 'a') as f:
         for item in dwk_dY_sp0:
             f.write("%e\n" % item)
     del dwk_dY_sp0
@@ -86,9 +96,19 @@ def main():
     dwk_dY_sp1 =  nu_k[1]*W_k[1]*fw.domega_dot_dY1_actual_deriv(A,rhoM, TM, Y0M, Y1M, Y2M, Y3M)
     dwk_dY_sp1 = (dwk_dY_sp1)/(omega_dot_k_scaling)
     n = int(len(dwk_dY_sp1))
-    with open(write_path + "/omega_dot_Y1_" + str(species_idx[1]) + "_actual.txt", 'w') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[1]) + "_dY1_actual.txt", 'w') as f:
         f.write("%d\n" % n)
-    with open(write_path + "/omega_dot_Y1_" + str(species_idx[1]) + "_actual.txt", 'a') as f:
+    with open(write_path + "/domega_dot_" + str(species_idx[1]) + "_dY1_actual.txt", 'a') as f:
+        for item in dwk_dY_sp1:
+            f.write("%e\n" % item)
+    del dwk_dY_sp1
+    
+    dwk_dY_sp1 =  nu_k[1]*W_k[1]*fw.domega_dot_dY2_actual_deriv(A,rhoM, TM, Y0M, Y1M, Y2M, Y3M)
+    dwk_dY_sp1 = (dwk_dY_sp1)/(omega_dot_k_scaling)
+    n = int(len(dwk_dY_sp1))
+    with open(write_path + "/domega_dot_" + str(species_idx[1]) + "_dY2_actual.txt", 'w') as f:
+        f.write("%d\n" % n)
+    with open(write_path + "/domega_dot_" + str(species_idx[1]) + "_dY2_actual.txt", 'a') as f:
         for item in dwk_dY_sp1:
             f.write("%e\n" % item)
     del dwk_dY_sp1

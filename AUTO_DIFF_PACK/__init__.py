@@ -5,4 +5,5 @@ from .f_w_functions_compute_A import *
 from .f_w_functions import *
 from .read_h5file_util import *
 from .read_util import *
+from .chem_source_term_functions import *
 

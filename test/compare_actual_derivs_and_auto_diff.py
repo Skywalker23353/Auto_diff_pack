@@ -7,8 +7,8 @@ def main():
     auto_diff_path = r"docs/Derivs"
     actual_diff_path = r"docs/Derivs"
 
-    filename_actual = ['omega_dot_Y1_1_actual.txt', 'omega_dot_Y0_0_actual.txt', 'omega_dot_Y0_0_actual.txt', 'omega_dot_Y0_0_actual.txt']
-    filename_autodiff = ['omega_dot_Y_1_1.txt', 'omega_dot_T_1.txt', 'omega_dot_T_2.txt', 'omega_dot_T_3.txt']
+    filename_actual = ['domega_dot_1_drho_actual.txt', 'domega_dot_1_dT_actual.txt', 'domega_dot_1_dY1_actual.txt', 'domega_dot_1_dY2_actual.txt']
+    filename_autodiff = ['domega_dot_1_drho.txt', 'domega_dot_1_dT.txt', 'domega_dot_1_dY1.txt', 'domega_dot_1_dY2.txt']
     n = 5579
 
     actual = np.zeros((len(filename_actual), n), dtype=np.float64)
@@ -26,13 +26,13 @@ def main():
     error = error + 1e-16
     x = np.arange(1,error.shape[1]+1)
     plt.figure()
-    plt.plot(x, -np.log10(np.abs(error[0][:])), label='omega_dot_Y1_1', color='red')
-    # plt.plot(x, -np.log10(np.abs(error[1][:])), label='omega_dot_T_1', color='blue')
-    # plt.plot(x, -np.log10(np.abs(error[2][:])), label='omega_dot_T_2', color='green')
-    # plt.plot(x, -np.log10(np.abs(error[3][:])), label='omega_dot_T_3', color='magenta')
+    plt.plot(x, -np.log10(np.abs(error[0][:])), label='domega_dot_1_drho', color='red')
+    # plt.plot(x, -np.log10(np.abs(error[1][:])), label='domega_dot_1_dT', color='blue')
+    # plt.plot(x, -np.log10(np.abs(error[2][:])), label='domega_dot_1_dY1', color='green')
+    # plt.plot(x, -np.log10(np.abs(error[3][:])), label='domega_dot_1_dY2', color='magenta')
     plt.xlabel('X')
     plt.ylabel('-log10(|Error|)')
-    plt.title('C computation error')
+    plt.title('$\dot{\omega}^{''}_{k}$ computation error')
     # plt.grid(True)
     plt.legend()
     plt.show()
