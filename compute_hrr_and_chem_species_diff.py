@@ -46,17 +46,17 @@ def main():
 
     domega_dot_O2_drho = jnp.diag(jax.jacfwd(cstf.omega_dot_O2,0)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_O2_drho_s = (domega_dot_O2_drho*rho_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1] + 1) + "_drho", domega_dot_O2_drho_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_drho", domega_dot_O2_drho_s)
     del domega_dot_O2_drho_s
 
     domega_dot_CO2_drho = jnp.diag(jax.jacfwd(cstf.omega_dot_CO2,0)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_CO2_drho_s = (domega_dot_CO2_drho*rho_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2] + 1) + "_drho", domega_dot_CO2_drho_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_drho", domega_dot_CO2_drho_s)
     del domega_dot_CO2_drho_s
 
     domega_dot_H2O_drho = jnp.diag(jax.jacfwd(cstf.omega_dot_H2O,0)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_H2O_drho_s = (domega_dot_H2O_drho*rho_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3] + 1) + "_drho", domega_dot_H2O_drho_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_drho", domega_dot_H2O_drho_s)
     del domega_dot_H2O_drho_s
 
     domega_dot_N2_drho = jnp.diag(jax.jacfwd(cstf.omega_dot_N2,0)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
@@ -86,17 +86,17 @@ def main():
     
     domega_dot_O2_dT = jnp.diag(jax.jacfwd(cstf.omega_dot_O2,1)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_O2_dT_s = (domega_dot_O2_dT*T_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1] + 1) + "_dT", domega_dot_O2_dT_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dT", domega_dot_O2_dT_s)
     del domega_dot_O2_dT_s
     
     domega_dot_CO2_dT = jnp.diag(jax.jacfwd(cstf.omega_dot_CO2,1)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_CO2_dT_s = (domega_dot_CO2_dT*T_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2] + 1) + "_dT", domega_dot_CO2_dT_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dT", domega_dot_CO2_dT_s)
     del domega_dot_CO2_dT_s
 
     domega_dot_H2O_dT = jnp.diag(jax.jacfwd(cstf.omega_dot_H2O,1)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_H2O_dT_s = (domega_dot_H2O_dT*T_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3] + 1) + "_dT", domega_dot_H2O_dT_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dT", domega_dot_H2O_dT_s)
     del domega_dot_H2O_dT_s
 
     domega_dot_N2_dT = jnp.diag(jax.jacfwd(cstf.omega_dot_N2,1)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
@@ -126,17 +126,17 @@ def main():
     
     domega_dot_O2_dY1 = jnp.diag(jax.jacfwd(cstf.omega_dot_O2,2)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_O2_dY1_s = (domega_dot_O2_dY1)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1] + 1) + "_dY1", domega_dot_O2_dY1_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dY1", domega_dot_O2_dY1_s)
     del domega_dot_O2_dY1_s
     
     domega_dot_CO2_dY1 = jnp.diag(jax.jacfwd(cstf.omega_dot_CO2,2)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_CO2_dY1_s = (domega_dot_CO2_dY1)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2] + 1) + "_dY1", domega_dot_CO2_dY1_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dY1", domega_dot_CO2_dY1_s)
     del domega_dot_CO2_dY1_s
     
     domega_dot_H2O_dY1 = jnp.diag(jax.jacfwd(cstf.omega_dot_H2O,2)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_H2O_dY1_s = (domega_dot_H2O_dY1)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3] + 1) + "_dY1", domega_dot_H2O_dY1_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dY1", domega_dot_H2O_dY1_s)
     del domega_dot_H2O_dY1_s
     
     domega_dot_N2_dY1 = jnp.diag(jax.jacfwd(cstf.omega_dot_N2,2)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
@@ -166,17 +166,17 @@ def main():
 
     domega_dot_O2_dY2 = jnp.diag(jax.jacfwd(cstf.omega_dot_O2,3)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_O2_dY2_s = (domega_dot_O2_dY2)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1] + 1) + "_dY2", domega_dot_O2_dY2_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dY2", domega_dot_O2_dY2_s)
     del domega_dot_O2_dY2_s
     
     domega_dot_CO2_dY2 = jnp.diag(jax.jacfwd(cstf.omega_dot_CO2,3)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_CO2_dY2_s = (domega_dot_CO2_dY2)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2] + 1) + "_dY2", domega_dot_CO2_dY2_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dY2", domega_dot_CO2_dY2_s)
     del domega_dot_CO2_dY2_s
     
     domega_dot_H2O_dY2 = jnp.diag(jax.jacfwd(cstf.omega_dot_H2O,3)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_H2O_dY2_s = (domega_dot_H2O_dY2)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3] + 1) + "_dY2", domega_dot_H2O_dY2_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dY2", domega_dot_H2O_dY2_s)
     del domega_dot_H2O_dY2_s
 
     domega_dot_N2_dY2 = jnp.diag(jax.jacfwd(cstf.omega_dot_N2,3)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
@@ -206,17 +206,17 @@ def main():
 
     domega_dot_O2_dY3 = jnp.diag(jax.jacfwd(cstf.omega_dot_O2,4)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_O2_dY3_s = (domega_dot_O2_dY3)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1] + 1) + "_dY3", domega_dot_O2_dY3_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dY3", domega_dot_O2_dY3_s)
     del domega_dot_O2_dY3_s
 
     domega_dot_CO2_dY3 = jnp.diag(jax.jacfwd(cstf.omega_dot_CO2,4)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_CO2_dY3_s = (domega_dot_CO2_dY3)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2] + 1) + "_dY3", domega_dot_CO2_dY3_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dY3", domega_dot_CO2_dY3_s)
     del domega_dot_CO2_dY3_s
 
     domega_dot_H2O_dY3 = jnp.diag(jax.jacfwd(cstf.omega_dot_H2O,4)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_H2O_dY3_s = (domega_dot_H2O_dY3)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3] + 1) + "_dY3", domega_dot_H2O_dY3_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dY3", domega_dot_H2O_dY3_s)
     del domega_dot_H2O_dY3_s
 
     domega_dot_N2_dY3 = jnp.diag(jax.jacfwd(cstf.omega_dot_N2,4)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
@@ -246,17 +246,17 @@ def main():
 
     domega_dot_O2_dY4 = jnp.diag(jax.jacfwd(cstf.omega_dot_O2,5)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_O2_dY4_s = (domega_dot_O2_dY4)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1] + 1) + "_dY4", domega_dot_O2_dY4_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dY4", domega_dot_O2_dY4_s)
     del domega_dot_O2_dY4_s
 
     domega_dot_CO2_dY4 = jnp.diag(jax.jacfwd(cstf.omega_dot_CO2,5)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_CO2_dY4_s = (domega_dot_CO2_dY4)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2] + 1) + "_dY4", domega_dot_CO2_dY4_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dY4", domega_dot_CO2_dY4_s)
     del domega_dot_CO2_dY4_s
 
     domega_dot_H2O_dY4 = jnp.diag(jax.jacfwd(cstf.omega_dot_H2O,5)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_H2O_dY4_s = (domega_dot_H2O_dY4)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3] + 1) + "_dY4", domega_dot_H2O_dY4_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dY4", domega_dot_H2O_dY4_s)
     del domega_dot_H2O_dY4_s
 
     domega_dot_N2_dY4 = jnp.diag(jax.jacfwd(cstf.omega_dot_N2,5)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
@@ -286,17 +286,17 @@ def main():
 
     domega_dot_O2_dY5 = jnp.diag(jax.jacfwd(cstf.omega_dot_O2,6)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_O2_dY5_s = (domega_dot_O2_dY5)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1] + 1) + "_dY5", domega_dot_O2_dY5_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dY5", domega_dot_O2_dY5_s)
     del domega_dot_O2_dY5_s
 
     domega_dot_CO2_dY5 = jnp.diag(jax.jacfwd(cstf.omega_dot_CO2,6)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_CO2_dY5_s = (domega_dot_CO2_dY5)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2] + 1) + "_dY5", domega_dot_CO2_dY5_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dY5", domega_dot_CO2_dY5_s)
     del domega_dot_CO2_dY5_s
 
     domega_dot_H2O_dY5 = jnp.diag(jax.jacfwd(cstf.omega_dot_H2O,6)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
     domega_dot_H2O_dY5_s = (domega_dot_H2O_dY5)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3] + 1) + "_dY5", domega_dot_H2O_dY5_s)
+    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dY5", domega_dot_H2O_dY5_s)
     del domega_dot_H2O_dY5_s
 
     domega_dot_N2_dY5 = jnp.diag(jax.jacfwd(cstf.omega_dot_N2,6)(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M))
