@@ -78,13 +78,13 @@ def domega_dot_dT_actual_deriv(rho, T, Y1, Y2, Y3, Y4):
 
 def domega_dot_dY1_actual_deriv(rho, T, Y1, Y2, Y3, Y4):
    rateConst  = A * jnp.exp(-KinP[0]/T)
-   wmol = rateConst * ((rho*(1/W_k[0]))**KinP[1]) * ((rho*(Y2/W_k[1]))**KinP[2])
+   wmol = rateConst *KinP[1]* ((rho*(1/W_k[0]))**KinP[1]) * ((rho*(Y2/W_k[1]))**KinP[2])
    
    return wmol
 
 def domega_dot_dY2_actual_deriv(rho, T, Y1, Y2, Y3, Y4):
 
    rateConst  = A * jnp.exp(-KinP[0]/T)
-   wmol = rateConst * ((rho*(Y1/W_k[0]))**KinP[1]) * ((rho*(1/W_k[1]))**KinP[2])
+   wmol = rateConst * KinP[2] * ((rho*(Y1/W_k[0]))**KinP[1]) * ((rho*(1/W_k[1]))**KinP[2])
    
    return wmol

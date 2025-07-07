@@ -21,3 +21,6 @@ AUTO_DIFF_PACK.egg-info/
 
 #Ignore csv files
 *.csv
+
+#Ignore temp.py file
+temp.py
