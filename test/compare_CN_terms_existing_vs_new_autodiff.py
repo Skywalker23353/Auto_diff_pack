@@ -62,7 +62,7 @@ def plot_data(data,var_name, save_path,save_plot):
 
 def main():
 
-    auto_diff_path = r"docs/Derivs_july_2025"
+    auto_diff_path = r"docs/Derivs_july_2025_jax_vmap"
     # actual_diff_path = r"docs/Derivs"
     actual_diff_path = r"docs/Baseflow_CN_P1_latest"
     error_path = r"docs/Error"
@@ -94,7 +94,8 @@ def main():
     # Compute the error
     
     error = actual - autodiff
-    plot_data(error[0][:],"CN_rho", error_path,save_plot=False)
+    # plot_data(error[0][:],"CN_rho", error_path,save_plot=False)
+    print("Max error for CN_rho: ", np.max(np.abs(error[0][:])))
     
 
 

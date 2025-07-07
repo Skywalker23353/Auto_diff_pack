@@ -62,19 +62,28 @@ def omega_dot_N2(rho, T, Y0, Y1, Y2, Y3, Y4, A,k ,epsilon ,W_k, nu_k):
     omega_dot = nu_k[4]*W_k[4]*w_mol(rho,T,Y0,Y1,Y2,Y3,Y4,A,k,epsilon,W_k)
     return omega_dot
 
-def HRR_differentials(w1,w2,w3,w4,w5,h_f1,h_f2,h_f3,h_f4,h_f5):
-    """Compute the HRR differentials for the given inputs.
-
-    Args:
-        w1, w2, w3, w4, w5 (float): Differentials for different species.
-
-    Returns:
-        float: Computed HRR differentials.
-    """
+def omega_dot_T(rho, T, Y0, Y1, Y2, Y3, Y4, A,k ,epsilon ,W_k, nu_k, h_f):
     # Compute HRR differentials
-    hrr_diffs = -(w1*h_f1 +
-                 w2*h_f2 +
-                 w3*h_f3 +
-                 w4*h_f4 +
-                 w5*h_f5)
-    return hrr_diffs
+    omega_dot_T= -(h_f[0]*omega_dot_CH4(rho, T, Y0, Y1, Y2, Y3, Y4, A, k, epsilon, W_k, nu_k) +
+                    h_f[1]*omega_dot_O2(rho, T, Y0, Y1, Y2, Y3, Y4, A, k, epsilon, W_k, nu_k) +
+                    h_f[2]*omega_dot_CO2(rho, T, Y0, Y1, Y2, Y3, Y4, A, k, epsilon, W_k, nu_k) +
+                    h_f[3]*omega_dot_H2O(rho, T, Y0, Y1, Y2, Y3, Y4, A, k, epsilon, W_k, nu_k) +
+                    h_f[4]*omega_dot_N2(rho, T, Y0, Y1, Y2, Y3, Y4, A, k, epsilon, W_k, nu_k))
+    return omega_dot_T
+
+# def HRR_differentials(w1,w2,w3,w4,w5,h_f1,h_f2,h_f3,h_f4,h_f5):
+#     """Compute the HRR differentials for the given inputs.
+
+#     Args:
+#         w1, w2, w3, w4, w5 (float): Differentials for different species.
+
+#     Returns:
+#         float: Computed HRR differentials.
+#     """
+#     # Compute HRR differentials
+#     hrr_diffs = -(w1*h_f1 +
+#                  w2*h_f2 +
+#                  w3*h_f3 +
+#                  w4*h_f4 +
+#                  w5*h_f5)
+#     return hrr_diffs
