@@ -41,10 +41,9 @@ def main():
         Y_O2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'O2_fmean')
         Y_CO2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'CO2_fmean')
         Y_H2O = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'H2O_fmean')
-
-        Y_all = [Y_CH4,Y_O2,Y_CO2,Y_H2O]
+        Y_N2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'N2_fmean')
         
-        Model_field = fw_EBU.wT_by_C_EBU(rho, h_f_all, W_k, nu_k,Y_all, epsilon, kappa)
+        Model_field = fw_EBU.wT_by_C_EBU(rho, h_f_all, W_k, nu_k,Y_CH4,Y_O2,Y_CO2,Y_H2O,Y_N2, epsilon, kappa)
         local_heat_release_rate_model[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, Model_field,0)
         # local_heat_release_rate_LES[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, LES_field,1)
     #global_heat_release_rate_LES = np.sum(local_heat_release_rate_LES)
