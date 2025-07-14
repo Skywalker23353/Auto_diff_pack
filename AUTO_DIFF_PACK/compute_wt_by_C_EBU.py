@@ -17,7 +17,11 @@ def C_bar(Y):
 
 # omega_dot function
 def w(rho, C, epsilon, kappa):
+<<<<<<< HEAD
     wmol = (epsilon/kappa) * rho * C * (1 - C)
+=======
+    wmol = (epsilon/kappa) * rho * C*(1-C)
+>>>>>>> e16ad9677e11ff2165852277f144c7b3511b364e
     return wmol
 
 
@@ -29,6 +33,7 @@ def wT_by_C_EBU(rho, h_f_all, W_k, nu_k, Y0,Y1,Y2,Y3,Y4, epsilon, kappa):
     #print("Length of Y:", len(Y))
     C = C_bar(Y1)
     wT_by_A = np.zeros(rho.shape, dtype=np.float64)
+    C = C_bar(Y1)
     for k in range(len(nu_k)):
         wmol = w(rho, C, epsilon, kappa)
         wT_by_A += h_f_all[k]*nu_k[k]*W_k[k]*wmol
