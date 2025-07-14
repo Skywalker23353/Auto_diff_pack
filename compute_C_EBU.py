@@ -44,7 +44,7 @@ def main():
 
         Y_all = [Y_CH4,Y_O2,Y_CO2,Y_H2O]
         
-        Model_field = fw_EBU.wT_by_C_EBU(rho, T, h_f_all, W_k, nu_k,Y_all, epsilon, kappa)
+        Model_field = fw_EBU.wT_by_C_EBU(rho, h_f_all, W_k, nu_k,Y_all, epsilon, kappa)
         local_heat_release_rate_model[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, Model_field,0)
         # local_heat_release_rate_LES[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, LES_field,1)
     #global_heat_release_rate_LES = np.sum(local_heat_release_rate_LES)
