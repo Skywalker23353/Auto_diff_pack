@@ -18,8 +18,7 @@ nu_dp_k = np.array([0.0,0.0,1.0,2.0,7.52],dtype=np.float64)
 nu_k = nu_dp_k - nu_p_k
 
 def main(): 
-    file_path = r"/work/home/satyam/satyam_files/CH4_jet_PF/2025_Runs/" \
-    r"LES_base_case_v6/filtering_run3/Final_baseflow_with_EBU_components" 
+    file_path = r"/work/home/satyam/satyam_files/CH4_jet_PF/2025_Runs/LES_base_case_v6/filtering_run3/Final_baseflow_with_EBU_components" 
     phasename = 'Reactants'
     filename = phasename
     field = 'Heatrelease'
@@ -41,7 +40,7 @@ def main():
         Y_O2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'O2_fmean')
         Y_CO2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'CO2_fmean')
         Y_H2O = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'H2O_fmean')
-        Y_N2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'N2_fmean')
+        Y_N2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'N2')
         
         Model_field = fw_EBU.wT_by_C_EBU(rho, h_f_all, W_k, nu_k,Y_CH4,Y_O2,Y_CO2,Y_H2O,Y_N2, epsilon, kappa)
         local_heat_release_rate_model[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, Model_field,0)
