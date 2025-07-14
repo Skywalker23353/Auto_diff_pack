@@ -31,7 +31,10 @@ def main():
     filename = phasename
     field = 'Heatrelease'
     indx = 1011260202
-
+    
+    Y_O2_B = 0.0423
+    Y_O2_U = 0.2226
+    
     grid_name = 'burner' 
     blks = np.arange(0, 28, 1)
     # field_name = 'Heatrelease'
@@ -50,7 +53,7 @@ def main():
         Y_H2O = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'H2O_fmean')
         Y_N2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'N2')
         C_EBU = np.ones_like(rho, dtype=np.float64)
-        
+
         h_f1_vec = h_f1*np.ones(rho.shape, dtype=np.float64)
         h_f2_vec = h_f2*np.ones(rho.shape, dtype=np.float64)
         h_f3_vec = h_f3*np.ones(rho.shape, dtype=np.float64)
@@ -70,9 +73,13 @@ def main():
         W_k_CO2_vec = W_k_CO2*np.ones(rho.shape, dtype=np.float64)
         W_k_H2O_vec = W_k_H2O*np.ones(rho.shape, dtype=np.float64)
         W_k_N2_vec = W_k_N2*np.ones(rho.shape, dtype=np.float64)
-        W_k = (W_k_CH4_vec, W_k_O2_vec, W_k_CO2_vec, W_k_H2O_vec, W_k_N2_vec)   
+        W_k = (W_k_CH4_vec, W_k_O2_vec, W_k_CO2_vec, W_k_H2O_vec, W_k_N2_vec)  
 
-        Model_field = fw_EBU.omega_dot_T(rho, T, Y_CH4, Y_O2, Y_CO2, Y_H2O, Y_N2, C_EBU,kappa ,epsilon ,W_k, nu_k, h_f)
+        Y_O2_U_vec = Y_O2_U*np.ones(rho.shape, dtype=np.float64)
+        Y_O2_B_vec = Y_O2_B*np.ones(rho.shape, dtype=np.float64)
+        
+
+        Model_field = fw_EBU.omega_dot_T(rho, T, Y_CH4, Y_O2, Y_CO2, Y_H2O, Y_N2, C_EBU,kappa ,epsilon ,W_k, nu_k, h_f, Y_O2_U_vec, Y_O2_B_vec)
         local_heat_release_rate_model[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, Model_field,0)
         # local_heat_release_rate_LES[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, LES_field,1)
     #global_heat_release_rate_LES = np.sum(local_heat_release_rate_LES)
