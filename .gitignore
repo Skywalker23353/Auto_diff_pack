@@ -24,3 +24,6 @@ AUTO_DIFF_PACK.egg-info/
 
 #Ignore temp.py file
 temp.py
+
+# Ignore logs folder
+logs/

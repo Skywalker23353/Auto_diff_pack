@@ -34,7 +34,7 @@ def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU, kappa, epsilon, W_k, Y_O2_U_vec, Y_
     """
     # Compute Q term
     rateConst  = C_EBU
-    w_mol_term = rateConst * (epsilon/kappa) * rho * (C(Y1, Y_O2_U_vec, Y_O2_B_vec)(1-C(Y1,Y_O2_U_vec, Y_O2_B_vec)))
+    w_mol_term = rateConst * (epsilon/kappa) * rho * (C(Y1, Y_O2_U_vec, Y_O2_B_vec)*(1-C(Y1,Y_O2_U_vec, Y_O2_B_vec)))
     return w_mol_term
 
 def omega_dot_CH4(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU,kappa, epsilon, W_k, nu_k, Y_O2_U_vec, Y_O2_B_vec):

@@ -9,8 +9,8 @@ import os
 def main():
     read_path = r"docs/FEHydro_P1_v10"
     #read_path = r"../.FEHydro_P1"
-    write_path = r"docs/Derivs_july_2025_jax_vmap"
-    #write_path = r"../.FEHydro/Auto_diff"
+    # write_path = r"docs/Derivs_july_2025_jax_vmap"
+    write_path = r"../.FEHydro/Baseflow_CN_P1"
     os.makedirs(write_path, exist_ok=True) 
     
     filename_Qbar = r"./Mean_Qbar.txt"

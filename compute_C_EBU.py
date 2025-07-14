@@ -1,104 +1,127 @@
 import os
 import numpy as np
-from AUTO_DIFF_PACK import compute_volume_integral as cvi
-from AUTO_DIFF_PACK import read_h5file_util as rh5
-# from AUTO_DIFF_PACK import compute_wt_by_C_EBU as fw_EBU
+import logging  # Step 1: Import logging
+from AUTO_DIFF_PACK import read_util as rfu
+from AUTO_DIFF_PACK import write_util as wfu
 from AUTO_DIFF_PACK import chem_source_term_functions_EBU as fw_EBU
 
-R = 8.314 # J/molK
-#Species Data
-h_f1 = -5.421277e06 #J/kg
-h_f2 = 4.949450e05 #J/kg
-h_f3 = -8.956200e06 #J/kg
-h_f4 = -1.367883e07 #J/kg
-h_f5 = 5.370115e05 #J/kg
+# Ensure log directory exists
+os.makedirs("logs", exist_ok=True)
 
-W_k_CH4 = 16e-3 #kg/mol
-W_k_O2 = 32e-3 #kg/mol
-W_k_CO2 = 44e-3 #kg/mol
-W_k_H2O = 18e-3 #kg/mol
-W_k_N2 = 28e-3 #kg/mol
-
-nu_k_CH4 = -1.0
-nu_k_O2 = -2.0
-nu_k_CO2 = 1.0
-nu_k_H2O = 2.0
-nu_k_N2 = 0.0
+# Step 2: Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("logs/compute_C_EBU.log", mode="w"),  # Overwrite log file each run
+        # logging.StreamHandler()  # Also log to console
+    ]
+)
 
 def main(): 
-    file_path = r"/work/home/satyam/satyam_files/CH4_jet_PF/2025_Runs/LES_base_case_v6/filtering_run3/Final_baseflow_with_EBU_components" 
-    phasename = 'Reactants'
-    filename = phasename
-    field = 'Heatrelease'
-    indx = 1011260202
-    
+    logging.info("Entered main()")
+    read_path = r"../.FEHydro_P1" 
+    write_path = r"../.FEHydro/Baseflow_CN_P1"
+    os.makedirs(write_path, exist_ok=True)
+
+    R = 8.314 # J/molK
+    rho_ref = 0.4237
+    T_ref = 800#K
+    #Species Data
+    h_f1 = -5.421277e06 #J/kg
+    h_f2 = 4.949450e05 #J/kg
+    h_f3 = -8.956200e06 #J/kg
+    h_f4 = -1.367883e07 #J/kg
+    h_f5 = 5.370115e05 #J/kg
+
+    W_k_CH4 = 16e-3 #kg/mol
+    W_k_O2 = 32e-3 #kg/mol
+    W_k_CO2 = 44e-3 #kg/mol
+    W_k_H2O = 18e-3 #kg/mol
+    W_k_N2 = 28e-3 #kg/mol
+
+    nu_k_CH4 = -1.0
+    nu_k_O2 = -2.0
+    nu_k_CO2 = 1.0
+    nu_k_H2O = 2.0
+    nu_k_N2 = 0.0
+
     Y_O2_B = 0.0423
     Y_O2_U = 0.2226
     
-    grid_name = 'burner' 
-    blks = np.arange(0, 28, 1)
-    # field_name = 'Heatrelease'
-    # local_heat_release_rate_LES = np.zeros(blks.shape, dtype=np.float64)
-    local_heat_release_rate_model = np.zeros(blks.shape, dtype=np.float64)
-    for blk in blks:
-        # LES_field = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, field_name)
+    # Species Data
+    h_f1 = -5.421277e06 #J/kg
+    h_f2 = 4.949450e05 #J/kg
+    h_f3 = -8.956200e06 #J/kg
+    h_f4 = -1.367883e07 #J/kg
+    h_f5 = 5.370115e05 #J/kg
 
-        rho = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'rho_mean')
-        T = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'T_fmean')
-        epsilon = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'epsilon')
-        kappa = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'TKE')
-        Y_CH4 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'CH4_fmean')
-        Y_O2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'O2_fmean')
-        Y_CO2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'CO2_fmean')
-        Y_H2O = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'H2O_fmean')
-        Y_N2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'N2')
-<<<<<<< HEAD
-=======
-        C_EBU = np.ones_like(rho, dtype=np.float64)
-<<<<<<< HEAD
->>>>>>> e16ad9677e11ff2165852277f144c7b3511b364e
-        
-=======
+    W_k_CH4 = 16e-3 #kg/mol
+    W_k_O2 = 32e-3 #kg/mol
+    W_k_CO2 = 44e-3 #kg/mol
+    W_k_H2O = 18e-3 #kg/mol
+    W_k_N2 = 28e-3 #kg/mol
 
->>>>>>> 66fb4e72ac9d920f2e7bc0e74d7d26f60d8ba260
-        h_f1_vec = h_f1*np.ones(rho.shape, dtype=np.float64)
-        h_f2_vec = h_f2*np.ones(rho.shape, dtype=np.float64)
-        h_f3_vec = h_f3*np.ones(rho.shape, dtype=np.float64)
-        h_f4_vec = h_f4*np.ones(rho.shape, dtype=np.float64)
-        h_f5_vec = h_f5*np.ones(rho.shape, dtype=np.float64)
-        h_f = (h_f1_vec, h_f2_vec, h_f3_vec, h_f4_vec, h_f5_vec)
+    nu_k_CH4 = -1.0
+    nu_k_O2 = -2.0
+    nu_k_CO2 = 1.0
+    nu_k_H2O = 2.0
+    nu_k_N2 = 0.0
+ 
+    rhoM = rfu.read_array_from_file_numpy(os.path.join(read_path ,'rhobase.txt'))
+    rhoM = rho_ref * rhoM
+    TM = rfu.read_array_from_file_numpy(os.path.join(read_path ,'Tbase.txt'))
+    TM = T_ref * TM
+    Y1M = rfu.read_array_from_file_numpy(os.path.join(read_path ,'Ybase1.txt'))
+    Y2M = rfu.read_array_from_file_numpy(os.path.join(read_path ,'Ybase2.txt'))
+    Y3M = rfu.read_array_from_file_numpy(os.path.join(read_path ,'Ybase3.txt'))
+    Y4M = rfu.read_array_from_file_numpy(os.path.join(read_path ,'Ybase4.txt'))
+    Y5M = 1 - (Y1M + Y2M + Y3M + Y4M)
 
-        nu_k_CH4_vec = nu_k_CH4*np.ones(rho.shape, dtype=np.float64)
-        nu_k_O2_vec = nu_k_O2*np.ones(rho.shape, dtype=np.float64)
-        nu_k_CO2_vec = nu_k_CO2*np.ones(rho.shape, dtype=np.float64)
-        nu_k_H2O_vec = nu_k_H2O*np.ones(rho.shape, dtype=np.float64)
-        nu_k_N2_vec = nu_k_N2*np.ones(rho.shape, dtype=np.float64)
-        nu_k = (nu_k_CH4_vec, nu_k_O2_vec, nu_k_CO2_vec, nu_k_H2O_vec, nu_k_N2_vec)
+    HRR_M = rfu.read_array_from_file_numpy(os.path.join(read_path ,'HRRbase.txt'))
+   
+   
+    W_k_CH4_vec = W_k_CH4*np.ones(rhoM.shape, dtype=np.float64)
+    W_k_O2_vec = W_k_O2*np.ones(rhoM.shape, dtype=np.float64)
+    W_k_CO2_vec = W_k_CO2*np.ones(rhoM.shape, dtype=np.float64)
+    W_k_H2O_vec = W_k_H2O*np.ones(rhoM.shape, dtype=np.float64)
+    W_k_N2_vec = W_k_N2*np.ones(rhoM.shape, dtype=np.float64)
+    W_k = (W_k_CH4_vec, W_k_O2_vec, W_k_CO2_vec, W_k_H2O_vec, W_k_N2_vec)
 
-        W_k_CH4_vec = W_k_CH4*np.ones(rho.shape, dtype=np.float64)
-        W_k_O2_vec = W_k_O2*np.ones(rho.shape, dtype=np.float64)
-        W_k_CO2_vec = W_k_CO2*np.ones(rho.shape, dtype=np.float64)
-        W_k_H2O_vec = W_k_H2O*np.ones(rho.shape, dtype=np.float64)
-        W_k_N2_vec = W_k_N2*np.ones(rho.shape, dtype=np.float64)
-        W_k = (W_k_CH4_vec, W_k_O2_vec, W_k_CO2_vec, W_k_H2O_vec, W_k_N2_vec)  
+    nu_k_CH4_vec = nu_k_CH4*np.ones(rhoM.shape, dtype=np.float64)
+    nu_k_O2_vec = nu_k_O2*np.ones(rhoM.shape, dtype=np.float64)
+    nu_k_CO2_vec = nu_k_CO2*np.ones(rhoM.shape, dtype=np.float64)
+    nu_k_H2O_vec = nu_k_H2O*np.ones(rhoM.shape, dtype=np.float64)
+    nu_k_N2_vec = nu_k_N2*np.ones(rhoM.shape, dtype=np.float64)
+    nu_k = (nu_k_CH4_vec, nu_k_O2_vec, nu_k_CO2_vec, nu_k_H2O_vec, nu_k_N2_vec)
 
-        Y_O2_U_vec = Y_O2_U*np.ones(rho.shape, dtype=np.float64)
-        Y_O2_B_vec = Y_O2_B*np.ones(rho.shape, dtype=np.float64)
-        
+    h_f1_vec = h_f1*np.ones(rhoM.shape, dtype=np.float64)
+    h_f2_vec = h_f2*np.ones(rhoM.shape, dtype=np.float64)
+    h_f3_vec = h_f3*np.ones(rhoM.shape, dtype=np.float64)
+    h_f4_vec = h_f4*np.ones(rhoM.shape, dtype=np.float64)
+    h_f5_vec = h_f5*np.ones(rhoM.shape, dtype=np.float64)
+    h_f = (h_f1_vec, h_f2_vec, h_f3_vec, h_f4_vec, h_f5_vec)
 
-        Model_field = fw_EBU.omega_dot_T(rho, T, Y_CH4, Y_O2, Y_CO2, Y_H2O, Y_N2, C_EBU,kappa ,epsilon ,W_k, nu_k, h_f, Y_O2_U_vec, Y_O2_B_vec)
-        local_heat_release_rate_model[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, Model_field,0)
-        # local_heat_release_rate_LES[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, LES_field,1)
-    #global_heat_release_rate_LES = np.sum(local_heat_release_rate_LES)
-    global_heat_release_rate_LES = 163.00
-    global_heat_release_rate_by_A_model = np.sum(local_heat_release_rate_model)
-    A = global_heat_release_rate_LES/global_heat_release_rate_by_A_model
-    print("Omega_bar (LES) = ", global_heat_release_rate_LES)
-    print("A = ",A)
-    with open("C_EBU.txt", "w") as f:
-        f.write("{:g}\n".format(A))
-    # with open("Mean_Qbar.txt", "w") as fQ:
-    #     fQ.write("{:g}\n".format(global_heat_release_rate_LES))
+    TEMP = np.ones(rhoM.shape, dtype=np.float64)
+    Y_O2_U_vec = Y_O2_U*np.ones(rhoM.shape, dtype=np.float64)
+    Y_O2_B_vec = Y_O2_B*np.ones(rhoM.shape, dtype=np.float64)
+
+    kappa = rfu.read_array_from_file_numpy(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
+    epsilon = rfu.read_array_from_file_numpy(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
+    
+
+    logging.debug("Calling fw_EBU.omega_dot_T")
+    Model_field = fw_EBU.omega_dot_T(
+        rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, TEMP, kappa, epsilon, W_k, nu_k, h_f, Y_O2_U_vec, Y_O2_B_vec
+    )
+    Model_field = Model_field + np.finfo(float).eps  # Avoid division by zero
+    C_EBU = HRR_M / Model_field
+
+    wfu.write_to_file(write_path, "C_EBU", C_EBU)
+    logging.info("main(): Finished all blocks")
+    logging.info("main(): Exiting main()")
 
 if __name__ == "__main__":
+    logging.info("Script started")
     main()  # Call the main function
+    logging.info("Script finished")
