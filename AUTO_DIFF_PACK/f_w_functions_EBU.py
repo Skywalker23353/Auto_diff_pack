@@ -71,19 +71,7 @@ def domega_dot_drho_actual_deriv(rho, T, Y1, Y2, Y3, Y4, C_EBU, epsilon, kappa):
    wmol = rateConst * epsilon * C_bar(Y2)* (1 - C_bar(Y2)) / kappa
    return wmol
 
-def domega_dot_dT_actual_deriv(rho, T, Y1, Y2, Y3, Y4, C_EBU, epsilon, kappa):
-   
-   wmol = 0*rho  # No dependence on T in this formulation
-   
-   return wmol
-
-def domega_dot_dY1_actual_deriv(rho, T, Y1, Y2, Y3, Y4, C_EBU, epsilon, kappa):
-   
-   wmol =  0*rho # No dependence on Y1 in this formulation
-   
-   return wmol
-
-def domega_dot_dY2_actual_deriv(rho, T, Y1, Y2, Y3, Y4, C_EBU, epsilon, kappa):
+def domega_dot_dY2_actual_deriv(rho, T, Y1, Y2, Y3, Y4, C_EBU, epsilon, kappa,Y_O2_U, Y_O2_B):
    
    wmol =  C_EBU*(epsilon/kappa)*rho*((Y_O2_U + Y_O2_B - 2*Y2)/(Y_O2_U - Y_O2_B)**2) # No dependence on Y1 in this formulation
    
