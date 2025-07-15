@@ -4,7 +4,7 @@ R = 8.314 # J/molK
 # Y_O2_B = 0.0423
 # Y_O2_U = 0.2226
 
-def C(Y, Y_O2_U, Y_O2_B):
+def Prog_var_C(Y, Y_O2_U, Y_O2_B):
     """Compute the progress variable term for the given species.
 
     Args:
@@ -32,9 +32,10 @@ def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU, kappa, epsilon, W_k, Y_O2_U_vec, Y_
     Returns:
         float: Computed Q term.
     """
+    C = (Y_O2_U_vec - Y1)/(Y_O2_U_vec - Y_O2_B_vec)
     # Compute Q term
     rateConst  = C_EBU
-    w_mol_term = rateConst * (epsilon/kappa) * rho * (C(Y1, Y_O2_U_vec, Y_O2_B_vec)*(1-C(Y1,Y_O2_U_vec, Y_O2_B_vec)))
+    w_mol_term = rateConst * (epsilon/kappa) * rho * C * (1-C)
     return w_mol_term
 
 def omega_dot_CH4(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU,kappa, epsilon, W_k, nu_k, Y_O2_U_vec, Y_O2_B_vec):
