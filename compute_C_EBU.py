@@ -47,7 +47,7 @@ def main():
     nu_k_N2 = 0.0
 
     Y_O2_B = 0.0423
-    Y_O2_U = 0.2226
+    Y_O2_U = 0.2300
     
     # Species Data
     h_f1 = -5.421277e06 #J/kg
@@ -114,7 +114,7 @@ def main():
     Model_field = fw_EBU.omega_dot_T(
         rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, TEMP, kappa, epsilon, W_k, nu_k, h_f, Y_O2_U_vec, Y_O2_B_vec
     )
-    Model_field = Model_field + np.finfo(float).eps  # Avoid division by zero
+    Model_field = Model_field + 1e-8#np.finfo(float).eps  # Avoid division by zero
     C_EBU = HRR_M / Model_field
 
     wfu.write_to_file(write_path, "C_EBU", C_EBU)
