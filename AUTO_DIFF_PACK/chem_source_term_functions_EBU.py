@@ -1,19 +1,7 @@
 #Rate Constants
+import jax.numpy as jnp
 R = 8.314 # J/molK
-
-# Y_O2_B = 0.0423
-# Y_O2_U = 0.2226
-
-def Prog_var_C(Y, Y_O2_U, Y_O2_B):
-    """Compute the progress variable term for the given species.
-
-    Args:
-        Y (float): Concentration of the species.
-
-    Returns:
-        float: Progress variable term.
-    """
-    return (Y_O2_U - Y)/ (Y_O2_U - Y_O2_B)
+tolerance = 1e-3
 
 def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU, kappa, epsilon, W_k, Y_O2_U_vec, Y_O2_B_vec):
     """Compute the Q term for the given inputs.
@@ -33,6 +21,7 @@ def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU, kappa, epsilon, W_k, Y_O2_U_vec, Y_
         float: Computed Q term.
     """
     C = (Y_O2_U_vec - Y1)/(Y_O2_U_vec - Y_O2_B_vec)
+    C = jnp.where(C < tolerance, 0.0, C)
     # Compute Q term
     rateConst  = C_EBU
     w_mol_term = rateConst * (epsilon/kappa) * rho * C * (1-C)

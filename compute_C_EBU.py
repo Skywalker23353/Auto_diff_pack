@@ -46,8 +46,10 @@ def main():
     nu_k_H2O = 2.0
     nu_k_N2 = 0.0
 
-    Y_O2_B = 0.0423
-    Y_O2_U = 0.2300
+    Y_O2_B = 0.003562
+    Y_O2_U = 0.224423
+
+    
     
     # Species Data
     h_f1 = -5.421277e06 #J/kg
