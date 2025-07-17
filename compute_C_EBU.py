@@ -106,8 +106,10 @@ def main():
     Y_O2_U_vec = Y_O2_U*np.ones(rhoM.shape, dtype=np.float64)
     Y_O2_B_vec = Y_O2_B*np.ones(rhoM.shape, dtype=np.float64)
 
-    kappa = rfu.read_array_from_file_numpy(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
-    epsilon = rfu.read_array_from_file_numpy(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
+    #kappa = rfu.read_array_from_file_numpy(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
+    kappa = np.ones(rhoM.shape, dtype=np.float64) #Turbulent Kinetic Energy
+    #epsilon = rfu.read_array_from_file_numpy(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
+    epsilon = np.ones(rhoM.shape, dtype=np.float64) #Turbulent dissipation rate
     
 
     logging.debug("Calling fw_EBU.omega_dot_T")
@@ -118,6 +120,7 @@ def main():
     C_EBU = HRR_M / Model_field
 
     wfu.write_to_file(write_path, "C_EBU", C_EBU)
+    wfu.write_to_file(write_path, "HRR_by_C_EBU", Model_field)
     logging.info("main(): Finished all blocks")
     logging.info("main(): Exiting main()")
 
