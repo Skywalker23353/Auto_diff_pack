@@ -4,19 +4,18 @@ R = 8.314 # J/molK
 tolerance = 1e-3
 
 def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU, kappa, epsilon, W_k, Y_O2_U_vec, Y_O2_B_vec):
-    """Compute the Q term for the given inputs.
+    """Compute the w_mol term for the given inputs.
 
     Args:
         rho (float): Density of the fluid.
         T (float): Temperature of the fluid.
-        Y0, Y1, Y2, Y3, Y4): (float): Concentrations of different species.
+        (Y0, Y1, Y2, Y3, Y4): (float): Concentrations of different species.
         C_EBU (float): EBU factor.
         k (float): TKE.
         epsilon (float): Dissipation.
         W_k (array): Molecular weights of the species.
-    
-    Expresssion: A*exp(-Ta/T)*(rho*(Y_CH4/W_CH4))**a)*(rho*(Y_O2/W_O2))**b)
-
+        Y_O2_U_vec (array): Upper limit of O2 concentration.
+        Y_O2_B_vec (array): Lower limit of O2 concentration.
     Returns:
         float: Computed Q term.
     """

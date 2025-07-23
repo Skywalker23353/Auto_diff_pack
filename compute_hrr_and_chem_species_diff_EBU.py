@@ -7,10 +7,8 @@ import os
 
 #Compute derivatives
 def main():
-    read_path = r"docs/FEHydro_P1_EBU"
-    #read_path = r"../.FEHydro_P1"
-    write_path = r"docs/Derivs_EBU"
-    # write_path = r"../.FEHydro/Baseflow_CN_P1"
+    read_path = r"../.FEHydro_P1"
+    write_path = r"../.FEHydro/Baseflow_CN_P1"
     os.makedirs(write_path, exist_ok=True) 
     
     filename_Qbar = r"./Mean_Qbar.txt"
