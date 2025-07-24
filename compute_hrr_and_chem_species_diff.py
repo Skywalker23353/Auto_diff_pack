@@ -17,10 +17,10 @@ def main():
     with open(filename_Qbar, 'r') as file:
         Q_bar = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    filename_A = r"./pre-exponential_A.txt"
-    with open(filename_A, 'r') as file:
-        A_arr = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
-
+    # filename_A = r"./pre-exponential_A.txt"
+    # with open(filename_A, 'r') as file:
+    #     A_arr = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
+    A = rfu.read_array_from_file(os.path.join(write_path ,'pre_exponential_field.txt'))
 
     rho_ref = 0.4237
     T_ref = 800#K
@@ -62,7 +62,7 @@ def main():
     Y4M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase4.txt'))
     Y5M = 1 - (Y1M + Y2M + Y3M + Y4M)
 
-    A = A_arr*jnp.ones(rhoM.shape, dtype=jnp.float64)
+    # A = A_arr*jnp.ones(rhoM.shape, dtype=jnp.float64)
     
     W_k_CH4_vec = W_k_CH4*jnp.ones(rhoM.shape, dtype=jnp.float64)
     W_k_O2_vec = W_k_O2*jnp.ones(rhoM.shape, dtype=jnp.float64)
