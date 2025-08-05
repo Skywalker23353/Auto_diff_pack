@@ -45,6 +45,7 @@ def main():
     nu_k_N2 = 0.0
 
     Y_O2_B = jnp.array(0.0423, dtype=jnp.float64)
+    #Y_O2_U = jnp.array(0.222606, dtype=jnp.float64)
     Y_O2_U = jnp.array(0.2300, dtype=jnp.float64)
 
     # W_k = jnp.array([16e-3,32e-3,44e-3,18e-3,28e-3],dtype=jnp.float64) #kg/mol
@@ -96,6 +97,8 @@ def main():
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
     omega_dot_T_scaling = (rho_ref*Cp_ref*T_ref*U_ref)/l_ref
 
+    CC = jax.vmap(cstf.CC, in_axes=(0,0,0,))(Y2M,Y_O2_U_vec,Y_O2_B_vec)
+    wfu.write_to_file(write_path, "CC", CC)
     domega_dot_CH4_grad = jax.vmap(jax.grad(cstf.omega_dot_CH4, argnums=(0,1,2,3,4,5,6)))
     domega_dot_O2_grad = jax.vmap(jax.grad(cstf.omega_dot_O2, argnums=(0,1,2,3,4,5,6)))
     domega_dot_CO2_grad = jax.vmap(jax.grad(cstf.omega_dot_CO2, argnums=(0,1,2,3,4,5,6)))

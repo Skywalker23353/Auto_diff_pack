@@ -2,6 +2,7 @@
 import jax.numpy as jnp
 R = 8.314 # J/molK
 tolerance = 1e-3
+tolerance1 = 1.0
 
 def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU, kappa, epsilon, W_k, Y_O2_U_vec, Y_O2_B_vec):
     """Compute the w_mol term for the given inputs.
@@ -21,10 +22,31 @@ def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU, kappa, epsilon, W_k, Y_O2_U_vec, Y_
     """
     C = (Y_O2_U_vec - Y1)/(Y_O2_U_vec - Y_O2_B_vec)
     C = jnp.where(C < tolerance, 0.0, C)
+    C = jnp.where(C > tolerance1, 1.0, C)
     # Compute Q term
     rateConst  = C_EBU
-    w_mol_term = rateConst * (epsilon/kappa) * rho * C * (1-C)
+    CC = C * (1-C)
+    #CC = jnp.where(CC < tolerance, 0.0, CC)
+    w_mol_term = rateConst * (epsilon/kappa) * rho * CC
     return w_mol_term
+
+def CC(Y1, Y_O2_U_vec, Y_O2_B_vec):
+    """Compute the w_mol term for the given inputs.
+
+    Args:
+        (Y0, Y1, Y2, Y3, Y4): (float): Concentrations of different species.
+        Y_O2_U_vec (array): Upper limit of O2 concentration.
+        Y_O2_B_vec (array): Lower limit of O2 concentration.
+    Returns:
+        float: Computed c(1-c).
+    """
+    C = (Y_O2_U_vec - Y1)/(Y_O2_U_vec - Y_O2_B_vec)
+    C = jnp.where(C < tolerance, 0.0, C)
+    C = jnp.where(C > tolerance1, 1.0, C)
+    # Compute Q term
+    CC = C * (1-C)
+    CC = jnp.where(CC < tolerance, 0.0, CC)
+    return CC
 
 def omega_dot_CH4(rho, T, Y0, Y1, Y2, Y3, Y4, C_EBU,kappa, epsilon, W_k, nu_k, Y_O2_U_vec, Y_O2_B_vec):
     # Compute omega_dot for CH4
