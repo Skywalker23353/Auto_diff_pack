@@ -31,11 +31,11 @@ Y_O2_U = jnp.array(0.2300, dtype=jnp.float64)
 
 def main():
      
-    file_path = r"/work/home/satyam/satyam_files/CH4_jet_PF/2025_Runs/LES_base_case_v6" 
+    file_path = r"/work/home/satyam/satyam_files/CH4_jet_PF/2025_Runs/LES_base_case_v6/filtering_run3/Final_baseflow_with_EBU_components" 
     phasename = 'Reactants'
     filename = phasename
     field = 'Heatrelease'
-    indx = 101126020
+    indx = 1011260202
 
     grid_name = 'burner' 
     blks = np.arange(0, 28, 1)
@@ -51,6 +51,7 @@ def main():
         Y_O2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'O2_fmean')
         Y_CO2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'CO2_fmean')
         Y_H2O = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'H2O_fmean')
+        Y_N2 = jnp.ones_like(rho)
 
         W_k_CH4_vec = W_k_CH4*jnp.ones(rho.shape, dtype=jnp.float64)
         W_k_O2_vec = W_k_O2*jnp.ones(rho.shape, dtype=jnp.float64)
@@ -80,7 +81,7 @@ def main():
         kappa = jnp.ones_like(rho)
         epsilon = jnp.ones_like(rho)
         
-        Model_field = jax.vmap(fw_EBU.omega_dot_T, in_axes=(0,0,0,0,0,0,0,0,0,0,0,0))(rho, T, Y_CH4, Y_O2_B_vec, Y_CO2,Y_H2O, temp, kappa, epsilon, W_k, nu_k, h_f, Y_O2_U_vec, Y_O2_B_vec)
+        Model_field = jax.vmap(fw_EBU.omega_dot_T, in_axes=(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))(rho, T, Y_CH4, Y_O2, Y_CO2, Y_H2O, Y_N2, temp, kappa, epsilon, W_k, nu_k, h_f, Y_O2_U_vec, Y_O2_B_vec)
         
         local_heat_release_rate_model[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, Model_field,0)
         local_heat_release_rate_LES[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, LES_field,1)
