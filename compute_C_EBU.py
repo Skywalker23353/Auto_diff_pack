@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import jax.numpy as jnp
+# import jax.numpy as np
 import jax
 from AUTO_DIFF_PACK import compute_volume_integral as cvi
 from AUTO_DIFF_PACK import read_h5file_util as rh5
@@ -25,9 +25,9 @@ nu_k_CO2 = 1.0
 nu_k_H2O = 2.0
 nu_k_N2 = 0.0
 
-Y_O2_B = jnp.array(0.0423, dtype=jnp.float64)
-#Y_O2_U = jnp.array(0.222606, dtype=jnp.float64)
-Y_O2_U = jnp.array(0.2300, dtype=jnp.float64)
+Y_O2_B = np.array(0.0423, dtype=np.float64)
+#Y_O2_U = np.array(0.222606, dtype=np.float64)
+Y_O2_U = np.array(0.2300, dtype=np.float64)
 
 def main():
      
@@ -40,8 +40,8 @@ def main():
     grid_name = 'burner' 
     blks = np.arange(0, 28, 1)
     field_name = 'Heatrelease'
-    local_heat_release_rate_LES = jnp.zeros(blks.shape, dtype=jnp.float64)
-    local_heat_release_rate_model = jnp.zeros(blks.shape, dtype=jnp.float64)
+    local_heat_release_rate_LES = np.zeros(blks.shape, dtype=np.float64)
+    local_heat_release_rate_model = np.zeros(blks.shape, dtype=np.float64)
     for blk in blks:
         LES_field = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, field_name)
 
@@ -51,43 +51,43 @@ def main():
         Y_O2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'O2_fmean')
         Y_CO2 = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'CO2_fmean')
         Y_H2O = rh5.hdf5_read_LES_data(file_path, filename, indx, phasename, grid_name, blk, 'H2O_fmean')
-        Y_N2 = jnp.ones_like(rho)
+        Y_N2 = np.ones_like(rho)
 
-        W_k_CH4_vec = W_k_CH4*jnp.ones(rho.shape, dtype=jnp.float64)
-        W_k_O2_vec = W_k_O2*jnp.ones(rho.shape, dtype=jnp.float64)
-        W_k_CO2_vec = W_k_CO2*jnp.ones(rho.shape, dtype=jnp.float64)
-        W_k_H2O_vec = W_k_H2O*jnp.ones(rho.shape, dtype=jnp.float64)
-        W_k_N2_vec = W_k_N2*jnp.ones(rho.shape, dtype=jnp.float64)
+        W_k_CH4_vec = W_k_CH4*np.ones(rho.shape, dtype=np.float64)
+        W_k_O2_vec = W_k_O2*np.ones(rho.shape, dtype=np.float64)
+        W_k_CO2_vec = W_k_CO2*np.ones(rho.shape, dtype=np.float64)
+        W_k_H2O_vec = W_k_H2O*np.ones(rho.shape, dtype=np.float64)
+        W_k_N2_vec = W_k_N2*np.ones(rho.shape, dtype=np.float64)
         W_k = (W_k_CH4_vec, W_k_O2_vec, W_k_CO2_vec, W_k_H2O_vec, W_k_N2_vec)
 
-        nu_k_CH4_vec = nu_k_CH4*jnp.ones(rho.shape, dtype=jnp.float64)
-        nu_k_O2_vec = nu_k_O2*jnp.ones(rho.shape, dtype=jnp.float64)
-        nu_k_CO2_vec = nu_k_CO2*jnp.ones(rho.shape, dtype=jnp.float64)
-        nu_k_H2O_vec = nu_k_H2O*jnp.ones(rho.shape, dtype=jnp.float64)
-        nu_k_N2_vec = nu_k_N2*jnp.ones(rho.shape, dtype=jnp.float64)
+        nu_k_CH4_vec = nu_k_CH4*np.ones(rho.shape, dtype=np.float64)
+        nu_k_O2_vec = nu_k_O2*np.ones(rho.shape, dtype=np.float64)
+        nu_k_CO2_vec = nu_k_CO2*np.ones(rho.shape, dtype=np.float64)
+        nu_k_H2O_vec = nu_k_H2O*np.ones(rho.shape, dtype=np.float64)
+        nu_k_N2_vec = nu_k_N2*np.ones(rho.shape, dtype=np.float64)
         nu_k = (nu_k_CH4_vec, nu_k_O2_vec, nu_k_CO2_vec, nu_k_H2O_vec, nu_k_N2_vec)
 
-        h_f1_vec = h_f1*jnp.ones(rho.shape, dtype=jnp.float64)
-        h_f2_vec = h_f2*jnp.ones(rho.shape, dtype=jnp.float64)
-        h_f3_vec = h_f3*jnp.ones(rho.shape, dtype=jnp.float64)
-        h_f4_vec = h_f4*jnp.ones(rho.shape, dtype=jnp.float64)
-        h_f5_vec = h_f5*jnp.ones(rho.shape, dtype=jnp.float64)
+        h_f1_vec = h_f1*np.ones(rho.shape, dtype=np.float64)
+        h_f2_vec = h_f2*np.ones(rho.shape, dtype=np.float64)
+        h_f3_vec = h_f3*np.ones(rho.shape, dtype=np.float64)
+        h_f4_vec = h_f4*np.ones(rho.shape, dtype=np.float64)
+        h_f5_vec = h_f5*np.ones(rho.shape, dtype=np.float64)
         h_f = (h_f1_vec, h_f2_vec, h_f3_vec, h_f4_vec, h_f5_vec)
 
-        Y_O2_B_vec = Y_O2_B*jnp.ones(rho.shape, dtype=jnp.float64)
-        Y_O2_U_vec = Y_O2_U*jnp.ones(rho.shape, dtype=jnp.float64)
+        Y_O2_B_vec = Y_O2_B*np.ones(rho.shape, dtype=np.float64)
+        Y_O2_U_vec = Y_O2_U*np.ones(rho.shape, dtype=np.float64)
 
-        temp = jnp.ones_like(rho)
-        kappa = jnp.ones_like(rho)
-        epsilon = jnp.ones_like(rho)
+        temp = np.ones_like(rho)
+        kappa = np.ones_like(rho)
+        epsilon = np.ones_like(rho)
         
         Model_field = jax.vmap(fw_EBU.omega_dot_T, in_axes=(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))(rho, T, Y_CH4, Y_O2, Y_CO2, Y_H2O, Y_N2, temp, kappa, epsilon, W_k, nu_k, h_f, Y_O2_U_vec, Y_O2_B_vec)
         
         local_heat_release_rate_model[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, Model_field,0)
         local_heat_release_rate_LES[blk] = cvi.compute_vol_integral_of_field(file_path, filename, phasename, grid_name, blk, LES_field,1)
-    #global_heat_release_rate_LES = jnp.sum(local_heat_release_rate_LES)
+    #global_heat_release_rate_LES = np.sum(local_heat_release_rate_LES)
     global_heat_release_rate_LES = 163.00
-    global_heat_release_rate_by_A_model = jnp.sum(local_heat_release_rate_model)
+    global_heat_release_rate_by_A_model = np.sum(local_heat_release_rate_model)
     Model_factor = global_heat_release_rate_LES/global_heat_release_rate_by_A_model
     print("Omega_bar (LES) = ", global_heat_release_rate_LES)
     print("F_EBU = ",Model_factor)
