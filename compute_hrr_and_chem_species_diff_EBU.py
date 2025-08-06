@@ -7,6 +7,7 @@ import os
 
 #Compute derivatives
 def main():
+    Model_flag = True # Set to True if using Model factor constant, False if using Model factor field
     read_path = r"../.FEHydro_P1"
     write_path = r"../.FEHydro/Baseflow_CN_P1"
     os.makedirs(write_path, exist_ok=True) 
@@ -15,8 +16,14 @@ def main():
     with open(filename_Qbar, 'r') as file:
         Q_bar = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    # A = rfu.read_array_from_file(os.path.join(write_path ,'C_EBU.txt'))
-    A = rfu.read_array_from_file(os.path.join(read_path ,'C_EBU.txt'))
+    if Model_flag:
+        filename_A = r"./Model_factor.txt"
+        with open(filename_A, 'r') as file:
+            A_arr = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
+    else:
+        A = rfu.read_array_from_file(os.path.join(write_path ,'C_EBU.txt'))
+                
+    # A = rfu.read_array_from_file(os.path.join(read_path ,'C_EBU.txt'))
 
     rho_ref = 0.4237
     T_ref = 800#K
@@ -62,6 +69,9 @@ def main():
     Y3M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase3.txt'))
     Y4M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase4.txt'))
     Y5M = 1 - (Y1M + Y2M + Y3M + Y4M)
+
+    if Model_flag:
+        A = A_arr * jnp.ones(rhoM.shape, dtype=jnp.float64)
       
     W_k_CH4_vec = W_k_CH4*jnp.ones(rhoM.shape, dtype=jnp.float64)
     W_k_O2_vec = W_k_O2*jnp.ones(rhoM.shape, dtype=jnp.float64)
