@@ -61,7 +61,8 @@ def main():
     Y5M = 1 - (Y1M + Y2M + Y3M + Y4M)
 
     HRR_M = rfu.read_array_from_file_numpy(os.path.join(read_path ,'HRRbase.txt'))
-   
+    HRR_thr = 1e6
+    HRR_M = np.where(HRR_M < HRR_thr, 0.0, HRR_M)
    
     W_k_CH4_vec = W_k_CH4*np.ones(rhoM.shape, dtype=np.float64)
     W_k_O2_vec = W_k_O2*np.ones(rhoM.shape, dtype=np.float64)
