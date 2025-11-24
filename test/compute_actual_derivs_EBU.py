@@ -51,6 +51,13 @@ def main():
     Y_O2_B_vec = Y_O2_B*jnp.ones(rhoM.shape, dtype=jnp.float64)
     Y_O2_U_vec = Y_O2_U*jnp.ones(rhoM.shape, dtype=jnp.float64)
 
+    dwT_dYO2 = fw.domega_dot_T_dY2(nu_k, W_k, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec, rhoM, Y2M)
+    dwT_drho = fw.domega_dot_T_drho(nu_k, W_k, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec, rhoM, Y2M)
+
+    dwT_dYO2_s = dwT_dYO2 / omega_dot_T_scaling
+
+    dwT_drho_s = (dwT_drho / omega_dot_T_scaling)*rho_ref
+
     #Species
     # CH4, O2, CO2, H2O
     # Variables 
@@ -66,51 +73,53 @@ def main():
 
     #Section 1: Compute omega_dot_CH4 differentials
     # 1
-    domega_dot_CH4_drho =  nu_k[0]*W_k[0]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
-    domega_dot_CH4_drho_s = (domega_dot_CH4_drho*rho_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[0]) + "_drho_actual", domega_dot_CH4_drho_s)
-    del domega_dot_CH4_drho_s
+    
 
-    #4
-    domega_dot_CH4_dY2 =  nu_k[0]*W_k[0]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
-    domega_dot_CH4_dY2_s = (domega_dot_CH4_dY2)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[0]) + "_dY2_actual", domega_dot_CH4_dY2_s)
-    del domega_dot_CH4_dY2_s
+    # domega_dot_CH4_drho =  nu_k[0]*W_k[0]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
+    # domega_dot_CH4_drho_s = (domega_dot_CH4_drho*rho_ref)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[0]) + "_drho_actual", domega_dot_CH4_drho_s)
+    # del domega_dot_CH4_drho_s
 
-
-    #Section 2: Compute omega_dot_O2 differentials
-    domega_dot_O2_drho =  nu_k[1]*W_k[1]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
-    domega_dot_O2_drho_s = (domega_dot_O2_drho*rho_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_drho_actual", domega_dot_O2_drho_s)
-    del domega_dot_O2_drho_s
-
-    domega_dot_O2_dY2 =  nu_k[1]*W_k[1]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
-    domega_dot_O2_dY2_s = (domega_dot_O2_dY2)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dY2_actual", domega_dot_O2_dY2_s)
-    del domega_dot_O2_dY2_s
+    # #4
+    # domega_dot_CH4_dY2 =  nu_k[0]*W_k[0]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
+    # domega_dot_CH4_dY2_s = (domega_dot_CH4_dY2)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[0]) + "_dY2_actual", domega_dot_CH4_dY2_s)
+    # del domega_dot_CH4_dY2_s
 
 
-    #Section 3: Compute omega_dot_CO2 differentials
-    domega_dot_CO2_drho =  nu_k[2]*W_k[2]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
-    domega_dot_CO2_drho_s = (domega_dot_CO2_drho*rho_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_drho_actual", domega_dot_CO2_drho_s)
-    del domega_dot_CO2_drho_s
+    # #Section 2: Compute omega_dot_O2 differentials
+    # domega_dot_O2_drho =  nu_k[1]*W_k[1]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
+    # domega_dot_O2_drho_s = (domega_dot_O2_drho*rho_ref)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_drho_actual", domega_dot_O2_drho_s)
+    # del domega_dot_O2_drho_s
 
-    domega_dot_CO2_dY2 =  nu_k[2]*W_k[2]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
-    domega_dot_CO2_dY2_s = (domega_dot_CO2_dY2)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dY2_actual", domega_dot_CO2_dY2_s)
-    del domega_dot_CO2_dY2_s
+    # domega_dot_O2_dY2 =  nu_k[1]*W_k[1]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
+    # domega_dot_O2_dY2_s = (domega_dot_O2_dY2)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[1]) + "_dY2_actual", domega_dot_O2_dY2_s)
+    # del domega_dot_O2_dY2_s
 
-    #Section 4: Compute omega_dot_H2O differentials
-    domega_dot_H2O_drho =  nu_k[3]*W_k[3]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
-    domega_dot_H2O_drho_s = (domega_dot_H2O_drho*rho_ref)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_drho_actual", domega_dot_H2O_drho_s)
-    del domega_dot_H2O_drho_s
 
-    domega_dot_H2O_dY2 =  nu_k[3]*W_k[3]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
-    domega_dot_H2O_dY2_s = (domega_dot_H2O_dY2)/(omega_dot_k_scaling)
-    wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dY2_actual", domega_dot_H2O_dY2_s)
-    del domega_dot_H2O_dY2_s
+    # #Section 3: Compute omega_dot_CO2 differentials
+    # domega_dot_CO2_drho =  nu_k[2]*W_k[2]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
+    # domega_dot_CO2_drho_s = (domega_dot_CO2_drho*rho_ref)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_drho_actual", domega_dot_CO2_drho_s)
+    # del domega_dot_CO2_drho_s
+
+    # domega_dot_CO2_dY2 =  nu_k[2]*W_k[2]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
+    # domega_dot_CO2_dY2_s = (domega_dot_CO2_dY2)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[2]) + "_dY2_actual", domega_dot_CO2_dY2_s)
+    # del domega_dot_CO2_dY2_s
+
+    # #Section 4: Compute omega_dot_H2O differentials
+    # domega_dot_H2O_drho =  nu_k[3]*W_k[3]*fw.domega_dot_drho_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa)
+    # domega_dot_H2O_drho_s = (domega_dot_H2O_drho*rho_ref)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_drho_actual", domega_dot_H2O_drho_s)
+    # del domega_dot_H2O_drho_s
+
+    # domega_dot_H2O_dY2 =  nu_k[3]*W_k[3]*fw.domega_dot_dY2_actual_deriv(rhoM, TM, Y1M, Y2M, Y3M, Y4M, C_EBU, epsilon, kappa, Y_O2_U_vec, Y_O2_B_vec)
+    # domega_dot_H2O_dY2_s = (domega_dot_H2O_dY2)/(omega_dot_k_scaling)
+    # wfu.write_to_file(write_path, "domega_dot_" + str(species_idx[3]) + "_dY2_actual", domega_dot_H2O_dY2_s)
+    # del domega_dot_H2O_dY2_s
     print("done")
 
 if __name__ == "__main__":
