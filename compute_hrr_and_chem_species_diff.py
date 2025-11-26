@@ -3,9 +3,8 @@ import jax
 from AUTO_DIFF_PACK import read_util as rfu
 from AUTO_DIFF_PACK import write_util as wfu
 from AUTO_DIFF_PACK import chem_source_term_functions as cstf
+from AUTO_DIFF_PACK import reg_least_sq_fit as rlsf
 import os
-
-from AUTO_DIFF_PACK.chem_source_term_functions_EBU_S import Ea
 
 #Compute derivatives
 def main():
@@ -97,6 +96,20 @@ def main():
     else:
         kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
         epsilon = rfu.read_array_from_file(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
+
+    # Read omega_dot_T_LES from file
+    omega_dot_T_LES = rfu.read_array_from_file(os.path.join(read_path, 'omega_dot_T_LES.txt'))
+    omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'omega_dot_T_LES_rms.txt'))
+    N_samples = 1000
+    
+    # Fit A and Ea using regularized least squares
+    A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
+                                  A, Ea, W_k, nu_k, h_f, kappa, epsilon,
+                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg=0.01)
+    
+    # Use optimized A and Ea for final calculations
+    A = A_s_opt * A
+    Ea = Ea_s_opt * Ea
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
