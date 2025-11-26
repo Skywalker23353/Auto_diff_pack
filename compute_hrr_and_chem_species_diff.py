@@ -5,6 +5,8 @@ from AUTO_DIFF_PACK import write_util as wfu
 from AUTO_DIFF_PACK import chem_source_term_functions as cstf
 import os
 
+from AUTO_DIFF_PACK.chem_source_term_functions_EBU_S import Ea
+
 #Compute derivatives
 def main():
     read_path = r"docs/FEHydro_P1_v10"
@@ -17,10 +19,13 @@ def main():
     with open(filename_Qbar, 'r') as file:
         Q_bar = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    # filename_A = r"./pre-exponential_A.txt"
-    # with open(filename_A, 'r') as file:
-    #     A_arr = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
-    A = rfu.read_array_from_file(os.path.join(write_path ,'pre_exponential_field.txt'))
+    filename_A = r"./pre-exponential_A.txt"
+    with open(filename_A, 'r') as file:
+        A_arr = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
+    # A = rfu.read_array_from_file(os.path.join(write_path ,'pre_exponential_field.txt'))
+
+    Ea_val = 31.588e3 # cal/mol
+    Ea_val = Ea_val*4.184 # J/mol
 
     rho_ref = 0.4237
     T_ref = 800#K
@@ -62,7 +67,8 @@ def main():
     Y4M = rfu.read_array_from_file(os.path.join(read_path ,'Ybase4.txt'))
     Y5M = 1 - (Y1M + Y2M + Y3M + Y4M)
 
-    # A = A_arr*jnp.ones(rhoM.shape, dtype=jnp.float64)
+    A = A_arr*jnp.ones(rhoM.shape, dtype=jnp.float64)
+    Ea = Ea_val*jnp.ones(rhoM.shape, dtype=jnp.float64)
     
     W_k_CH4_vec = W_k_CH4*jnp.ones(rhoM.shape, dtype=jnp.float64)
     W_k_O2_vec = W_k_O2*jnp.ones(rhoM.shape, dtype=jnp.float64)
@@ -98,14 +104,13 @@ def main():
     domega_dot_H20_grad = jax.vmap(jax.grad(cstf.omega_dot_H2O, argnums=(0,1,2,3,4,5,6)))
     domega_dot_N2_grad = jax.vmap(jax.grad(cstf.omega_dot_N2, argnums=(0,1,2,3,4,5,6)))
 
-    domega_dot_CH4_drho, domega_dot_CH4_dT, domega_dot_CH4_dY1, domega_dot_CH4_dY2, domega_dot_CH4_dY3, domega_dot_CH4_dY4, domega_dot_CH4_dY5 = domega_dot_CH4_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, kappa, epsilon, W_k, nu_k)
-    domega_dot_O2_drho, domega_dot_O2_dT, domega_dot_O2_dY1, domega_dot_O2_dY2, domega_dot_O2_dY3, domega_dot_O2_dY4, domega_dot_O2_dY5 = domega_dot_O2_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, kappa, epsilon, W_k, nu_k)
-    domega_dot_CO2_drho, domega_dot_CO2_dT, domega_dot_CO2_dY1, domega_dot_CO2_dY2, domega_dot_CO2_dY3, domega_dot_CO2_dY4, domega_dot_CO2_dY5 = domega_dot_CO2_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, kappa, epsilon, W_k, nu_k)
-    domega_dot_H2O_drho, domega_dot_H2O_dT, domega_dot_H2O_dY1, domega_dot_H2O_dY2, domega_dot_H2O_dY3, domega_dot_H2O_dY4, domega_dot_H2O_dY5 = domega_dot_H20_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, kappa, epsilon, W_k, nu_k)
-    domega_dot_N2_drho, domega_dot_N2_dT, domega_dot_N2_dY1, domega_dot_N2_dY2, domega_dot_N2_dY3, domega_dot_N2_dY4, domega_dot_N2_dY5 = domega_dot_N2_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, kappa, epsilon, W_k, nu_k)
-
+    domega_dot_CH4_drho, domega_dot_CH4_dT, domega_dot_CH4_dY1, domega_dot_CH4_dY2, domega_dot_CH4_dY3, domega_dot_CH4_dY4, domega_dot_CH4_dY5 = domega_dot_CH4_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A,  Ea, kappa, epsilon, W_k, nu_k)
+    domega_dot_O2_drho, domega_dot_O2_dT, domega_dot_O2_dY1, domega_dot_O2_dY2, domega_dot_O2_dY3, domega_dot_O2_dY4, domega_dot_O2_dY5 = domega_dot_O2_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k)
+    domega_dot_CO2_drho, domega_dot_CO2_dT, domega_dot_CO2_dY1, domega_dot_CO2_dY2, domega_dot_CO2_dY3, domega_dot_CO2_dY4, domega_dot_CO2_dY5 = domega_dot_CO2_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k)
+    domega_dot_H2O_drho, domega_dot_H2O_dT, domega_dot_H2O_dY1, domega_dot_H2O_dY2, domega_dot_H2O_dY3, domega_dot_H2O_dY4, domega_dot_H2O_dY5 = domega_dot_H20_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k)
+    domega_dot_N2_drho, domega_dot_N2_dT, domega_dot_N2_dY1, domega_dot_N2_dY2, domega_dot_N2_dY3, domega_dot_N2_dY4, domega_dot_N2_dY5 = domega_dot_N2_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k)
     domega_dot_T_grad = jax.vmap(jax.grad(cstf.omega_dot_T, argnums=(0,1,2,3,4,5,6)))
-    domega_dot_T_drho, domega_dot_T_dT, domega_dot_T_dY1, domega_dot_T_dY2, domega_dot_T_dY3, domega_dot_T_dY4, domega_dot_T_dY5 = domega_dot_T_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, kappa, epsilon, W_k, nu_k, h_f)
+    domega_dot_T_drho, domega_dot_T_dT, domega_dot_T_dY1, domega_dot_T_dY2, domega_dot_T_dY3, domega_dot_T_dY4, domega_dot_T_dY5 = domega_dot_T_grad(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k, h_f)
 
     # Compute domega_dot_k_drho_terms---------------------------------------------------
     domega_dot_CH4_drho_s = (domega_dot_CH4_drho*rho_ref)/(omega_dot_k_scaling) 
