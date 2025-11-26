@@ -91,8 +91,12 @@ def main():
     h_f5_vec = h_f5*jnp.ones(rhoM.shape, dtype=jnp.float64)
     h_f = (h_f1_vec, h_f2_vec, h_f3_vec, h_f4_vec, h_f5_vec)
     
-    kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
-    epsilon = rfu.read_array_from_file(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
+    if not os.path.exists(os.path.join(read_path, 'epsilon.txt')):
+        kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
+        epsilon = jnp.zeros(rhoM.shape, dtype=jnp.float64)
+    else:
+        kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
+        epsilon = rfu.read_array_from_file(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
