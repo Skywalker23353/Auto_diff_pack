@@ -62,22 +62,23 @@ def plot_data(data,var_name, save_path,save_plot):
 
 def main():
 
-    auto_diff_path = r"docs/Derivs_july_2025_jax_vmap"
-    # actual_diff_path = r"docs/Derivs"
-    actual_diff_path = r"docs/Baseflow_CN_P1_latest"
+    auto_diff_path = r"docs/Derivs_EBU"
+    actual_diff_path = r"docs/Derivs_EBU"
+    # actual_diff_path = r"docs/Baseflow_CN_P1_latest"
     error_path = r"docs/Error"
     os.makedirs(error_path, exist_ok=True)
     
     # actual = rfu.read_array_from_file(os.path.join(actual_diff_path, "CN_rho.txt"))
     # autodiff = rfu.read_array_from_file(os.path.join(auto_diff_path, "CN_rho.txt"))
     # TERMS
-    var = ["CN_rho", "CN_T", "CN_Y1", "CN_Y2", "CN_Y3", "CN_Y4"]
+    var_autodiff = ["domega_dot_1_drho"]#, "domega_dot_1_dY2","domega_dot_2_drho","domega_dot_2_dY2","domega_dot_3_drho","domega_dot_3_dY2","domega_dot_4_drho","domega_dot_4_dY2"]
+    
     n = 5579
-    filename_actual = np.zeros((len(var)), dtype=object)
-    filename_autodiff = np.zeros((len(var)), dtype=object)
-    for i in range(len(var)):
-        filename_actual[i] = f"{var[i]}.txt"
-        filename_autodiff[i] = f"{var[i]}.txt"
+    filename_actual = np.zeros((len(var_autodiff)), dtype=object)
+    filename_autodiff = np.zeros((len(var_autodiff)), dtype=object)
+    for i in range(len(var_autodiff)):
+        filename_actual[i] = f"{var_autodiff[i]}_actual.txt"
+        filename_autodiff[i] = f"{var_autodiff[i]}.txt"
     
 
     actual = np.zeros((filename_actual.shape[0],n), dtype=np.float64)
@@ -94,8 +95,9 @@ def main():
     # Compute the error
     
     error = actual - autodiff
-    # plot_data(error[0][:],"CN_rho", error_path,save_plot=False)
-    print("Max error for CN_rho: ", np.max(np.abs(error[0][:])))
+    plot_data(error[0][:],"domega_dot_1_dY2", error_path,save_plot=False)
+    # print("Max error for domega_dot_1_drho: ", np.max(np.abs(error[0][:])))
+    # print("Max error for domega_dot_1_dY2: ", np.max(np.abs(error[1][:])))
     
 
 
