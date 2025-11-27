@@ -1,7 +1,7 @@
 import jax
 import jax.numpy as jnp
 import AUTO_DIFF_PACK.chem_source_term_functions as cstf
-from jaxopt import ScipyBoundedMinimize
+from jaxopt import ScipyMinimize
 
 # Loss function for regularized least squares
 def loss_fn(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
@@ -51,13 +51,11 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     # Vectorized computation of omega_dot_T for all grid points
     omega_dot_T_vmap = jax.vmap(cstf.omega_dot_T, in_axes=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
-    # Optimize with bounds: (lower_bounds, upper_bounds)
-    # A_s and Ea_s bounds: allow 0.01x to 100x the initial values
-    bounds = (jnp.array([0.01, 0.01]), jnp.array([100.0, 100.0]))
-    optimizer = ScipyBoundedMinimize(fun=lambda params: loss_fn(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
-                                                                A_init, Ea_init, kappa, epsilon,  W_k, nu_k, h_f,
-                                                                omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg),
-                                     method="L-BFGS-B", bounds=bounds)
+    # Optimize - regularization term keeps parameters close to initial values
+    optimizer = ScipyMinimize(fun=lambda params: loss_fn(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
+                                                         A_init, Ea_init, kappa, epsilon, W_k, nu_k, h_f,
+                                                         omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg),
+                              method="L-BFGS-B")
     init_params = jnp.array([1.0, 1.0])  # A_s and Ea_s start at 1.0 (no change from initial)    
     print("Fitting A and Ea using regularized least squares...")
     result = optimizer.run(init_params)
@@ -70,4 +68,4 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     print(f"Initial Ea: {Ea_init[0]:.6e}, Optimized Ea: {Ea_opt:.6e}")
     print(f"Fit loss: {result.state.fun_val:.6e}\n")
     
-    return A_s_opt, Ea_s_opt
+    return A_opt, Ea_opt
