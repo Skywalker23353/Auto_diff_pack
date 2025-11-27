@@ -51,12 +51,11 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     # Vectorized computation of omega_dot_T for all grid points
     omega_dot_T_vmap = jax.vmap(cstf.omega_dot_T, in_axes=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
-    bounds = ((0.01, None), (0.01, None))  # A_s, Ea_s must be positive 
     # Optimize
     optimizer = ScipyBoundedMinimize(fun=lambda params: loss_fn(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                                                 A_init, Ea_init, kappa, epsilon,  W_k, nu_k, h_f,
                                                                 omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg),
-                                                                method="L-BFGS-B", bounds=bounds)
+                                                                method="L-BFGS-B", bounds=(jnp.array([0.01, 10.0]), jnp.array([0.01, 10.0])))
     init_params = jnp.array([1.0, 1.0])  # A_s and Ea_s start at 1.0 (no change from initial)    
     print("Fitting A and Ea using regularized least squares...")
     result = optimizer.run(init_params)
