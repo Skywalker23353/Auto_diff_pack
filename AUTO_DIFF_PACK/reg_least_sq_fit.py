@@ -67,3 +67,16 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     print(f"Fit loss: {float(result.state.fun_val):.6e}\n")
     
     return A_s_opt, Ea_s_opt
+
+def compute_rmse(omega_dot_T_LES, omega_dot_T_model):
+    """Compute RMSE"""
+    rmse = jnp.sqrt(jnp.mean((omega_dot_T_LES - omega_dot_T_model)**2))
+    return float(rmse)
+
+def compute_nrmse(omega_dot_T_LES, omega_dot_T_model):
+    """Compute Normalized RMSE (relative to observed data range)"""
+    rmse = jnp.sqrt(jnp.mean((omega_dot_T_LES - omega_dot_T_model)**2))
+    data_range = jnp.max(omega_dot_T_LES) - jnp.min(omega_dot_T_LES)
+    nrmse = rmse / data_range
+    return float(nrmse)
+
