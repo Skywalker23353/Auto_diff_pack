@@ -58,13 +58,32 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                               method="L-BFGS-B")
     init_params = jnp.array([1.0, 1.0])  # A_s and Ea_s start at 1.0 (no change from initial)    
     print("Fitting A and Ea using regularized least squares...")
+    grad_loss = jax.grad(lambda params: loss_fn(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
+                                    A_init, Ea_init, kappa, epsilon, W_k, nu_k, h_f,
+                                    omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg))
+    
     result = optimizer.run(init_params)
     
     A_s_opt, Ea_s_opt = result.params
     
-    print(f"A_s: {float(A_s_opt):.6f}")
-    print(f"Optimized Ea: {float(Ea_s_opt):.6e}")
-    print(f"Fit loss: {float(result.state.fun_val):.6e}\n")
+    # Compute gradient at optimal point
+    grad_at_opt = grad_loss(result.params)
+    optimal_loss = float(result.state.fun_val)
+    
+    # Normalize gradients by optimal loss value
+    grad_normalized = grad_at_opt / (optimal_loss + 1e-10)  # Add small epsilon to avoid division by zero
+    
+    A_opt = float(A_s_opt * A_init)
+    Ea_opt = float(Ea_s_opt * Ea_init)
+    
+    print(f"Optimization Results:")
+    print(f"  Initial A: {float(A_init):.6e}, Optimized A: {A_opt:.6e}")
+    print(f"  Initial Ea: {float(Ea_init):.6e}, Optimized Ea: {Ea_opt:.6e}")
+    print(f"  Optimal loss: {optimal_loss:.6e}")
+    print(f"  Gradient at optimum: dL/dA_s = {float(grad_at_opt[0]):.6e}, dL/dEa_s = {float(grad_at_opt[1]):.6e}")
+    print(f"  Normalized gradient (grad/loss): dL/dA_s = {float(grad_normalized[0]):.6e}, dL/dEa_s = {float(grad_normalized[1]):.6e}")
+    print(f"  Gradient magnitude: {float(jnp.linalg.norm(grad_at_opt)):.6e}")
+    print(f"  Gradient norm / loss: {float(jnp.linalg.norm(grad_at_opt) / (optimal_loss + 1e-10)):.6e}\n")
     
     return A_s_opt, Ea_s_opt
 
@@ -76,7 +95,7 @@ def compute_rmse(omega_dot_T_LES, omega_dot_T_model):
 def compute_nrmse(omega_dot_T_LES, omega_dot_T_model):
     """Compute Normalized RMSE (relative to observed data range)"""
     rmse = jnp.sqrt(jnp.mean((omega_dot_T_LES - omega_dot_T_model)**2))
-    data_range = jnp.max(omega_dot_T_LES) - jnp.min(omega_dot_T_LES)
+    data_range = jnp.max(omega_dot_T_LES)# - jnp.min(omega_dot_T_LES)
     nrmse = rmse / data_range
     return float(nrmse)
 
