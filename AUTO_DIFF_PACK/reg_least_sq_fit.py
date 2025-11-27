@@ -61,11 +61,9 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     result = optimizer.run(init_params)
     
     A_s_opt, Ea_s_opt = result.params
-    A_opt = float(A_s_opt * A_init)
-    Ea_opt = float(Ea_s_opt * Ea_init)
     
-    print(f"Initial A: {float(A_init):.6e}, Optimized A: {A_opt:.6e}, A_s: {float(A_s_opt):.6f}")
-    print(f"Initial Ea: {float(Ea_init):.6e}, Optimized Ea: {Ea_opt:.6e}")
+    print(f"A_s: {float(A_s_opt):.6f}")
+    print(f"Optimized Ea: {float(Ea_s_opt):.6e}")
     print(f"Fit loss: {float(result.state.fun_val):.6e}\n")
     
     return A_s_opt, Ea_s_opt
