@@ -95,7 +95,7 @@ def compute_rmse(omega_dot_T_LES, omega_dot_T_model):
 def compute_nrmse(omega_dot_T_LES, omega_dot_T_model):
     """Compute Normalized RMSE (relative to observed data range)"""
     rmse = jnp.sqrt(jnp.mean((omega_dot_T_LES - omega_dot_T_model)**2))
-    data_range = jnp.max(omega_dot_T_LES)# - jnp.min(omega_dot_T_LES)
+    data_range = jnp.max(omega_dot_T_LES)
     nrmse = rmse / data_range
     return float(nrmse)
 

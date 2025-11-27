@@ -103,15 +103,6 @@ def main():
     omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'HRRrms.txt'))
     N_samples = 1160
     
-    omega_dot_T_vmap = jax.vmap(cstf.omega_dot_T, in_axes=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    omega_dot_T_model_prior = omega_dot_T_vmap(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
-                                         A, Ea, kappa, epsilon, W_k, nu_k, h_f)
-    
-    rmse_prior = rlsf.compute_rmse(omega_dot_T_LES, omega_dot_T_model_prior)
-    nrmse_prior = rlsf.compute_nrmse(omega_dot_T_LES, omega_dot_T_model_prior)
-    print(f"RMSE: {rmse_prior:.6e}")
-    print(f"Normalized RMSE: {nrmse_prior:.6f}")  # Should be << 1.0
-
     # Fit A and Ea using regularized least squares
     A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                   A, Ea, W_k, nu_k, h_f, kappa, epsilon,
@@ -133,14 +124,6 @@ def main():
 
     A = A_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
     Ea = Ea_val_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
-
-    omega_dot_T_model_post = omega_dot_T_vmap(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
-                                         A, Ea, kappa, epsilon, W_k, nu_k, h_f)
-    
-    rmse_post = rlsf.compute_rmse(omega_dot_T_LES, omega_dot_T_model_post)
-    nrmse_post = rlsf.compute_nrmse(omega_dot_T_LES, omega_dot_T_model_post)
-    print(f"RMSE: {rmse_post:.6e}")
-    print(f"Normalized RMSE: {nrmse_post:.6f}")
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
