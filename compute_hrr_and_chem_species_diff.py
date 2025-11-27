@@ -1,17 +1,21 @@
 import jax.numpy as jnp
 import jax 
+import logging 
+from AUTO_DIFF_PACK.logging_util import get_logger,setup_logging
 from AUTO_DIFF_PACK import read_util as rfu
 from AUTO_DIFF_PACK import write_util as wfu
 from AUTO_DIFF_PACK import chem_source_term_functions as cstf
 from AUTO_DIFF_PACK import reg_least_sq_fit as rlsf
 import os
 
+logger = get_logger()
+
 #Compute derivatives
 def main():
-    read_path = r"docs/FEHydro_P1_v10"
+    read_path = r"docs/FEHydro_P1"
     #read_path = r"../.FEHydro_P1"
-    # write_path = r"docs/Derivs_july_2025_jax_vmap"
-    write_path = r"../.FEHydro/Baseflow_CN_P1"
+    write_path = r"docs/Derivs_mod_ARR"
+    # write_path = r"../.FEHydro/Baseflow_CN_P1"
     os.makedirs(write_path, exist_ok=True) 
     
     filename_Qbar = r"./Mean_Qbar.txt"
@@ -91,7 +95,7 @@ def main():
     h_f = (h_f1_vec, h_f2_vec, h_f3_vec, h_f4_vec, h_f5_vec)
     
     if not os.path.exists(os.path.join(read_path, 'epsilon.txt')):
-        print("Kappa and epsilon files not found. Setting the values to zero. \n")
+        logger.info("Kappa and epsilon files not found. Setting the values to zero. \n")
         kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
         epsilon = jnp.zeros(rhoM.shape, dtype=jnp.float64)
     else:
@@ -102,28 +106,40 @@ def main():
     omega_dot_T_LES = rfu.read_array_from_file(os.path.join(read_path, 'HRRbase.txt'))
     omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'HRRrms.txt'))
     N_samples = 1160
+
+    omega_dot_T_model_vmap = jax.vmap(cstf.omega_dot_T, in_axes=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    omega_dot_T_model = omega_dot_T_model_vmap(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k, h_f)
+    nrmse = rlsf.compute_nrmse(omega_dot_T_LES, omega_dot_T_model)
+
+    logger.info("Initial NRMSE between model and LES HRR data: %.6e", nrmse)
+    del nrmse
+    del omega_dot_T_model
     
     # Fit A and Ea using regularized least squares
     A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
-                                  A, Ea, W_k, nu_k, h_f, kappa, epsilon,
+                                  A_arr, Ea_val, W_k, nu_k, h_f, kappa, epsilon,
                                    omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg=0.01)
     
-    print("Completed fitting A and Ea.\n")
-    print("A_s_opt:", A_s_opt)
-    print("Ea_s_opt:", Ea_s_opt)
+    logger.info("Completed fitting A and Ea.\n")
+    logger.info("A_s_opt: %.6e", A_s_opt)
+    logger.info("Ea_s_opt: %.6e", Ea_s_opt)
 
     # Use optimized A and Ea for final calculations
     A_arr_opt = A_s_opt * A_arr
     Ea_val_opt = Ea_s_opt * Ea_val
 
-    print("A_arr_opt:", A_arr_opt)
-    print("Ea_arr_opt:", Ea_val_opt)
+    logger.info("A_arr_opt: %.6e", A_arr_opt)
+    logger.info("Ea_arr_opt: %.6e", Ea_val_opt)
     
     del A 
     del Ea
 
     A = A_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
     Ea = Ea_val_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
+
+    omega_dot_T_model = omega_dot_T_model_vmap(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k, h_f)    
+    nrmse = rlsf.compute_nrmse(omega_dot_T_LES, omega_dot_T_model)
+    logger.info("Final NRMSE between model and LES HRR data after optimization: %.6e", nrmse)
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
@@ -376,6 +392,14 @@ def main():
     del domega_dot_H2O_dY5
     del domega_dot_N2_dY5
 
-    print("\nDONE\n")
+    logger.info("\nDONE\n")
 if __name__ == "__main__":
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    setup_logging(level=logging.DEBUG, script_dir=script_directory)
+    try:
         main()
+        logger.info("Script completed successfully")
+    except Exception as e:
+        logger.error("An error occurred: %s", str(e), exc_info=True)
+        raise
+    
