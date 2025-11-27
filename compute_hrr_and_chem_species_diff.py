@@ -91,16 +91,17 @@ def main():
     h_f = (h_f1_vec, h_f2_vec, h_f3_vec, h_f4_vec, h_f5_vec)
     
     if not os.path.exists(os.path.join(read_path, 'epsilon.txt')):
-        kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
+        print("Kappa and epsilon files not found. Setting the values to zero. \n")
+	kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
         epsilon = jnp.zeros(rhoM.shape, dtype=jnp.float64)
     else:
         kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
         epsilon = rfu.read_array_from_file(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
 
     # Read omega_dot_T_LES from file
-    omega_dot_T_LES = rfu.read_array_from_file(os.path.join(read_path, 'omega_dot_T_LES.txt'))
-    omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'omega_dot_T_LES_rms.txt'))
-    N_samples = 1000
+    omega_dot_T_LES = rfu.read_array_from_file(os.path.join(read_path, 'HRRbase.txt'))
+    omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'HRRrms.txt'))
+    N_samples = 1160
     
     # Fit A and Ea using regularized least squares
     A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
