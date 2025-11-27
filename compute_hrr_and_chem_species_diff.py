@@ -108,15 +108,22 @@ def main():
                                   A, Ea, W_k, nu_k, h_f, kappa, epsilon,
                                    omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg=0.01)
     
+    print("Completed fitting A and Ea.\n")
+    print("A_s_opt:", A_s_opt)
+    print("Ea_s_opt:", Ea_s_opt)
+
     # Use optimized A and Ea for final calculations
     A_arr_opt = A_s_opt * A_arr
-    Ea_arr_opt = Ea_s_opt * Ea_val
+    Ea_val_opt = Ea_s_opt * Ea_val
 
+    print("A_arr_opt:", A_arr_opt)
+    print("Ea_arr_opt:", Ea_val_opt)
+    
     del A 
     del Ea
 
     A = A_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
-    Ea = Ea_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
+    Ea = Ea_val_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
