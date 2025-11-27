@@ -109,8 +109,14 @@ def main():
                                    omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg=0.01)
     
     # Use optimized A and Ea for final calculations
-    A = A_s_opt * A
-    Ea = Ea_s_opt * Ea
+    A_arr_opt = A_s_opt * A_arr
+    Ea_arr_opt = Ea_s_opt * Ea_val
+
+    del A 
+    del Ea
+
+    A = A_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
+    Ea = Ea_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
