@@ -92,7 +92,7 @@ def main():
     
     if not os.path.exists(os.path.join(read_path, 'epsilon.txt')):
         print("Kappa and epsilon files not found. Setting the values to zero. \n")
-	kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
+        kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
         epsilon = jnp.zeros(rhoM.shape, dtype=jnp.float64)
     else:
         kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
