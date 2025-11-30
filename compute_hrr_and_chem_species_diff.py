@@ -78,7 +78,7 @@ def main():
     W_k_CO2_vec = W_k_CO2*jnp.ones(rhoM.shape, dtype=jnp.float64)
     W_k_H2O_vec = W_k_H2O*jnp.ones(rhoM.shape, dtype=jnp.float64)
     W_k_N2_vec = W_k_N2*jnp.ones(rhoM.shape, dtype=jnp.float64)
-    W_k = (W_k_CH4_vec, W_k_O2_vec, W_k_CO2_vec, W_k_H2O_vec, W_k_N2_vec)
+    W_k = (W_k_CH4_vec, W_k_O2_vec, W_k_CO2_vec, W_k_H2O_vec, W_k_N2_vec) #tuple of arrays
 
     nu_k_CH4_vec = nu_k_CH4*jnp.ones(rhoM.shape, dtype=jnp.float64)
     nu_k_O2_vec = nu_k_O2*jnp.ones(rhoM.shape, dtype=jnp.float64)
@@ -106,19 +106,13 @@ def main():
     omega_dot_T_LES = rfu.read_array_from_file(os.path.join(read_path, 'HRRbase.txt'))
     omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'HRRrms.txt'))
     N_samples = 1160
-
-    omega_dot_T_model_vmap = jax.vmap(cstf.omega_dot_T, in_axes=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    omega_dot_T_model = omega_dot_T_model_vmap(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k, h_f)
-    nrmse = rlsf.compute_nrmse(omega_dot_T_LES, omega_dot_T_model)
-
-    logger.info("Initial NRMSE between model and LES HRR data: %.6e", nrmse)
-    del nrmse
-    del omega_dot_T_model
     
     # Fit A and Ea using regularized least squares
+    init_params = jnp.array([1.0, 1.0])
+    lambda_reg = jnp.array(0.01)
     A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                   A_arr, Ea_val, W_k, nu_k, h_f, kappa, epsilon,
-                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg=0.01)
+                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, init_params)
     
     logger.info("Completed fitting A and Ea.\n")
     logger.info("A_s_opt: %.6e", A_s_opt)
@@ -136,10 +130,6 @@ def main():
 
     A = A_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
     Ea = Ea_val_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
-
-    omega_dot_T_model = omega_dot_T_model_vmap(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M, A, Ea, kappa, epsilon, W_k, nu_k, h_f)    
-    nrmse = rlsf.compute_nrmse(omega_dot_T_LES, omega_dot_T_model)
-    logger.info("Final NRMSE between model and LES HRR data after optimization: %.6e", nrmse)
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
