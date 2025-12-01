@@ -108,8 +108,12 @@ def main():
     N_samples = 1160
     
     # Fit A and Ea using regularized least squares
-    init_params = jnp.array([1.0, 1.0])
-    lambda_reg = jnp.array(0.01)
+    model_uncty = jnp.array(0.01)
+    A_s_init = jnp.array(1.0)
+    Ea_s_init = jnp.array(1.0)
+    init_params = jnp.array([A_s_init, Ea_s_init, model_uncty])
+    lambda_reg = jnp.array(10.0)
+    
     A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                   A_arr, Ea_val, W_k, nu_k, h_f, kappa, epsilon,
                                    omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, init_params)
