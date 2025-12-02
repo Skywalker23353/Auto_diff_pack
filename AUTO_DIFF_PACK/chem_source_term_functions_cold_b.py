@@ -27,7 +27,7 @@ def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, A, Ea, kappa, epsilon, W_k, T_u, T_c, delt
     # Compute Q term
     rateConst  = A * jnp.exp(-Ea/(R*T))
     w_mol_term = rateConst * ((rho*(Y0/W_k[0]))**KinP[0]) * ((rho*(Y1/W_k[1]))**KinP[1])
-    cold_b_param = 0.5 * ( 1 + jnp.tanh((T/T_u - T_c)/delta))
+    cold_b_param = 0.5 * ( 1 + jnp.tanh(((T/T_u) - T_c)/delta))
     w_mol_term = w_mol_term * cold_b_param
     return w_mol_term
 

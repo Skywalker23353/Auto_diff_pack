@@ -113,9 +113,9 @@ def main():
     model_uncty = jnp.array(0.01)
     A_s_st = jnp.array(1.0)
     Ea_s_st = jnp.array(1.0)
-    z_c_st = jnp.array(jnp.log(1.01))
+    z_c_st = jnp.array(jnp.log(0.01))
     delta_st = jnp.array(0.1)
-    st_params = jnp.array([A_s_st, Ea_s_st, model_uncty , z_c_st, delta_st], dtype=jnp.float64)
+    st_params = jnp.array([A_s_st, Ea_s_st, model_uncty , jnp.log(0.1), 1.0], dtype=jnp.float64)
     lambda_reg = jnp.array(10.0)
     
     A_s_opt, Ea_s_opt, z_c, delta = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
@@ -138,7 +138,7 @@ def main():
 
     A = A_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
     Ea = Ea_val_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
-    T_c = jnp.exp(z_c)*jnp.ones(rhoM.shape, dtype=jnp.float64)
+    T_c = (1 + jnp.exp(z_c))*jnp.ones(rhoM.shape, dtype=jnp.float64)
     delta = delta*jnp.ones(rhoM.shape, dtype=jnp.float64)
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
