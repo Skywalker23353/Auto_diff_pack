@@ -4,7 +4,7 @@ import logging
 from AUTO_DIFF_PACK.logging_util import get_logger,setup_logging
 from AUTO_DIFF_PACK import read_util as rfu
 from AUTO_DIFF_PACK import write_util as wfu
-from AUTO_DIFF_PACK import reg_least_sq_fit_simple as rlsf
+from AUTO_DIFF_PACK import reg_least_sq_fit as rlsf
 import os
 
 logger = get_logger()
@@ -117,28 +117,30 @@ def main(script_directory):
     ### Training #####################################################################
     # Fit A and Ea using regularized least squares
     model_uncty = jnp.array(0.01)
-    A_s_init = jnp.array(1.0)
-    Ea_s_init = jnp.array(1.0)
-    init_params = jnp.array([A_s_init, Ea_s_init, model_uncty])
+    A_s_st = jnp.array(1.0)
+    Ea_s_st = jnp.array(1.0)
+    z_c_st = jnp.array(jnp.log(0.1))
+    delta_st = jnp.array(0.1)
+    st_params = jnp.array([A_s_st, Ea_s_st, model_uncty , jnp.log(0.1), 1.0], dtype=jnp.float64)
     lambda_reg = jnp.array(10.0)
     
-    A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
+    A_s_opt, Ea_s_opt, z_c, delta = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                   A_arr, Ea_val, W_k, nu_k, h_f, kappa, epsilon,
-                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, init_params)
+                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, st_params, z_c_st, delta_st, T_ref)
     
     logger.info("Completed fitting A and Ea.\n")
     logger.info("A_s_opt: %.6e", A_s_opt)
     logger.info("Ea_s_opt: %.6e", Ea_s_opt)
 
     # Use optimized A and Ea for final calculations
-    A_arr_opt = A_s_opt * A_arr
-    Ea_val_opt = Ea_s_opt * Ea_val
+    # A_arr_opt = A_s_opt * A_arr
+    # Ea_val_opt = Ea_s_opt * Ea_val
 
-    with open("A_optimized.txt", "w") as f:
-        f.write("{:g}\n".format(A_arr_opt.item()))
+    # with open("A_optimized.txt", "w") as f:
+    #     f.write("{:g}\n".format(A_arr_opt.item()))
 
-    with open("Ea_optimized.txt", "w") as f:
-        f.write("{:g}\n".format(Ea_val_opt.item()))
+    # with open("Ea_optimized.txt", "w") as f:
+    #     f.write("{:g}\n".format(Ea_val_opt.item()))
 
     logger.info("\nDONE\n")
 

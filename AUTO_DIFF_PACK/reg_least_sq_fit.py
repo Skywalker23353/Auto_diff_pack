@@ -27,7 +27,7 @@ def loss_fn(A_s, Ea_s, model_uncty, z_c, delta, omega_dot_T_vmap, rhoM, TM, Y1M,
     Ea_field = Ea_s * Ea_val * jnp.ones(rhoM.shape, dtype=jnp.float64)
     model_uncty_field = model_uncty * jnp.ones(rhoM.shape, dtype=jnp.float64)
     T_u_field = T_u * jnp.ones(rhoM.shape, dtype=jnp.float64)
-    # T_c_field = (1 + jnp.exp(0.01*z_c)) * jnp.ones(rhoM.shape, dtype=jnp.float64)
+    # T_c_field = (1 + jnp.exp(z_c)) * jnp.ones(rhoM.shape, dtype=jnp.float64)
     T_c_field = 1.5 * jnp.ones(rhoM.shape, dtype=jnp.float64)
     # delta_field = delta * jnp.ones(rhoM.shape, dtype=jnp.float64)
     delta_field = 1.0 * jnp.ones(rhoM.shape, dtype=jnp.float64)
@@ -87,7 +87,7 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                     jac= lambda params: loss_fn_grad(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                     A_val, Ea_val, kappa, epsilon, W_k, nu_k, h_f,
                                     omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, z_c_st, delta_st, T_u),
-                    options={'disp': True, 'gtol': 1e-6})
+                    options={'disp': True, 'gtol': 1e-4})
     
     hessian = jax.hessian(loss_fn_wrapper)
     hess_evaluated = hessian(res1.x, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,

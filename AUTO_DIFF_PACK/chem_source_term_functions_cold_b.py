@@ -26,9 +26,10 @@ def w_mol(rho, T, Y0, Y1, Y2, Y3, Y4, A, Ea, kappa, epsilon, W_k, T_u, T_c, delt
     """
     # Compute Q term
     rateConst  = A * jnp.exp(-Ea/(R*T))
-    w_mol_term = rateConst * ((rho*(Y0/W_k[0]))**KinP[0]) * ((rho*(Y1/W_k[1]))**KinP[1])
-    cold_b_param = 0.5 * ( 1 + jnp.tanh(((T/T_u) - T_c)/delta))
-    w_mol_term = w_mol_term * cold_b_param
+    cold_bc= A * jnp.exp(-Ea/(R*T_u))
+    rateConst_cold_bc = rateConst - cold_bc
+    w_mol_term = rateConst_cold_bc * ((rho*(Y0/W_k[0]))**KinP[0]) * ((rho*(Y1/W_k[1]))**KinP[1])
+
     return w_mol_term
 
 def omega_dot_CH4(rho, T, Y0, Y1, Y2, Y3, Y4, A, Ea, kappa, epsilon, W_k, nu_k, T_u, T_c, delta):
