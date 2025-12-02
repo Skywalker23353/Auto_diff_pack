@@ -1,6 +1,6 @@
 import jax
 import jax.numpy as jnp
-import AUTO_DIFF_PACK.chem_source_term_functions as cstf
+import AUTO_DIFF_PACK.chem_source_term_functions_cold_b as cstf
 from scipy.optimize import minimize
 from AUTO_DIFF_PACK.logging_util import get_logger
 
@@ -12,7 +12,7 @@ def loss_fn_wrapper(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
             A_val, Ea_val, kappa, epsilon, W_k, nu_k, h_f,
             omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, z_c_st, delta_st, T_u):
     
-    A_s, Ea_s, z_c, delta, model_uncty = params 
+    A_s, Ea_s, model_uncty,z_c, delta = params 
     return loss_fn(A_s, Ea_s, z_c, delta, model_uncty, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
             A_val, Ea_val, kappa, epsilon, W_k, nu_k, h_f,
             omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, z_c_st, delta_st, T_u)
@@ -36,7 +36,7 @@ def loss_fn(A_s, Ea_s, z_c, delta, model_uncty, omega_dot_T_vmap, rhoM, TM, Y1M,
     normalization = (omega_dot_T_LES_rms / jnp.sqrt(N_samples - 1))**2 + model_uncty_field**2
     print("SIze of normalization:", jnp.shape(normalization))
     mse_normalized = (omega_dot_T_LES - omega_dot_T_model)**2 / normalization
-    J_l = jnp.mean(mse_normalized)
+    J_l = jnp.sum(mse_normalized)
 
     uncty_norm = 0.5 * jnp.log(2 * jnp.pi) + 0.5 * jnp.sum(jnp.log(normalization))
     J_l += uncty_norm
@@ -86,7 +86,7 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                     jac= lambda params: loss_fn_grad(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                     A_val, Ea_val, kappa, epsilon, W_k, nu_k, h_f,
                                     omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, z_c_st, delta_st, T_u),
-                    options={'disp': True, 'gtol': 1e-6, 'ftol': 1e-6})
+                    options={'disp': True, 'gtol': 1e-6})
     
     hessian = jax.hessian(loss_fn_wrapper)
     hess_evaluated = hessian(res1.x, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
@@ -126,14 +126,14 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     hessian_det = (diag_Hess[0] * diag_Hess[1]) ** (-1/2)
     logger.info("Volume of the 1 sigma ellipsoid inverse square root: %.6e", float(hessian_det))
     
-    A_s_opt, Ea_s_opt, model_uncty_opt, T_c, delta = res1.x
+    A_s_opt, Ea_s_opt, model_uncty_opt, z_c, delta = res1.x
     logger.debug("BFGS Optimization iterations: %d", res1.nit)
     logger.debug("BFGS Optimization success: %s", res1.success)
     logger.info("BFGS Optimized A_s: %.6e, Ea_s: %.6e, model_uncty: %.6e", float(A_s_opt), float(Ea_s_opt), float(model_uncty_opt))
-    logger.info("Optimized T_c: %.6e, delta: %.6e", float(T_c), float(delta))
+    logger.info("Optimized z_c: %.6e, delta: %.6e", float(z_c), float(delta))
     logger.info("BFGS Final loss: %.6e", float(res1.fun))
     
-    return A_s_opt, Ea_s_opt, T_c, delta
+    return A_s_opt, Ea_s_opt, z_c, delta
 
 # def compute_rmse(omega_dot_T_LES, omega_dot_T_model):
 #     """Compute RMSE"""
