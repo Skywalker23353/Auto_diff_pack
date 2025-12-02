@@ -74,7 +74,7 @@ def main(script_directory):
     else:
         kappa = rfu.read_array_from_file(os.path.join(read_path ,'kappa.txt')) #Turbulent Kinetic Energy
 
-    Xcoord = rfu.read_array_from_file(os.path.join(read_path ,'xcoord.txt'))
+    Xcoord = rfu.read_coords_from_file(os.path.join(read_path ,'xcoord.txt'))
     ####################################################################################
     # limit data to x > 0.15 m
     x_limit = 0.15
