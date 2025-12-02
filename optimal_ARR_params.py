@@ -62,21 +62,24 @@ def main(script_directory):
     omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'HRRrms.txt'))
     N_samples = 1160
 
-    if not (os.path.exists(os.path.join(read_path, 'epsilon.txt')) and 
-            os.path.exists(os.path.join(read_path, 'TKE.txt'))):
+    if not (os.path.exists(os.path.join(read_path, 'epsilon.txt'))):
         logger.info("Kappa and epsilon files not found. Setting the values to zero. \n")
-        kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
         epsilon = jnp.zeros(rhoM.shape, dtype=jnp.float64)
     else:
-        kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
         epsilon = rfu.read_array_from_file(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
+    
+    if not (os.path.exists(os.path.join(read_path, 'kappa.txt'))):
+        logger.info("Kappa file not found. Setting the values to zero. \n")
+        kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
+    else:
+        kappa = rfu.read_array_from_file(os.path.join(read_path ,'kappa.txt')) #Turbulent Kinetic Energy
 
     Xcoord = rfu.read_array_from_file(os.path.join(read_path ,'xcoord.txt'))
     ####################################################################################
-    # Filter data to x > 0.15 m
+    # limit data to x > 0.15 m
     x_limit = 0.15
     indices = jnp.where(Xcoord >= x_limit)
-
+    logger.info("Number of data points after filtering for x >= %.2f m: %d", x_limit, len(indices[0]))
     rhoM = rhoM[indices]
     TM = TM[indices]
     Y1M = Y1M[indices]
