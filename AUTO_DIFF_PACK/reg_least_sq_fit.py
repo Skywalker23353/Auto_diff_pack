@@ -128,6 +128,7 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     logger.debug("BFGS Optimization iterations: %d", res1.nit)
     logger.debug("BFGS Optimization success: %s", res1.success)
     logger.info("BFGS Optimized A_s: %.6e, Ea_s: %.6e, model_uncty: %.6e", float(A_s_opt), float(Ea_s_opt), float(model_uncty_opt))
+    logger.info("Optimized T_c: %.6e, delta: %.6e", float(T_c), float(delta))
     logger.info("BFGS Final loss: %.6e", float(res1.fun))
     
     return A_s_opt, Ea_s_opt, T_c, delta
