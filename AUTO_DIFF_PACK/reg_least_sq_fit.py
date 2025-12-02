@@ -13,11 +13,11 @@ def loss_fn_wrapper(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
             omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, z_c_st, delta_st, T_u):
     
     A_s, Ea_s, model_uncty,z_c, delta = params 
-    return loss_fn(A_s, Ea_s, z_c, delta, model_uncty, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
+    return loss_fn(A_s, Ea_s, model_uncty, z_c, delta, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
             A_val, Ea_val, kappa, epsilon, W_k, nu_k, h_f,
             omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, z_c_st, delta_st, T_u)
     
-def loss_fn(A_s, Ea_s, z_c, delta, model_uncty, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
+def loss_fn(A_s, Ea_s, model_uncty, z_c, delta, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
             A_val, Ea_val, kappa, epsilon, W_k, nu_k, h_f,
             omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, z_c_st, delta_st, T_u): 
     
