@@ -83,7 +83,7 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                     jac= lambda params: loss_fn_grad(params, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                     A_init, Ea_init, kappa, epsilon, W_k, nu_k, h_f,
                                     omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg),
-                    options={'disp': True, 'gtol': 1e-6, 'ftol': 1e-6})
+                    options={'disp': True, 'gtol': 1e-6})
     
     hessian = jax.hessian(loss_fn_wrapper)
     hess_evaluated = hessian(res1.x, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,

@@ -1,5 +1,6 @@
 import jax
 import jax.numpy as jnp
+import numpy as np
 import AUTO_DIFF_PACK.chem_source_term_functions_cold_b as cstf
 from scipy.optimize import minimize
 from AUTO_DIFF_PACK.logging_util import get_logger
@@ -111,7 +112,7 @@ def fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
     try:
         _ = jnp.linalg.cholesky(sym_hess)
         logger.info("Cholesky decomposition succeeded -> Hessian is positive definite.")
-    except Exception as e:
+    except np.linalg.LinAlgError as e:
         logger.info("Cholesky decomposition failed -> Hessian is NOT positive definite. Exception: %s", str(e))
     
     gradient = loss_fn_grad(res1.x, omega_dot_T_vmap, rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,

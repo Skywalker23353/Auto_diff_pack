@@ -10,7 +10,7 @@ import os
 logger = get_logger()
 
 #Compute derivatives
-def main():
+def main(script_directory):
     read_path = r"docs/FEHydro_P1"
     #read_path = r"../.FEHydro_P1"
     write_path = r"docs/Derivs_mod_ARR"
@@ -62,14 +62,14 @@ def main():
     omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'HRRrms.txt'))
     N_samples = 1160
 
-    if not os.path.exists(os.path.join(read_path, 'epsilon.txt')):
+    if not (os.path.exists(os.path.join(read_path, 'epsilon.txt')) and 
+            os.path.exists(os.path.join(read_path, 'TKE.txt'))):
         logger.info("Kappa and epsilon files not found. Setting the values to zero. \n")
         kappa = jnp.zeros(rhoM.shape, dtype=jnp.float64)
         epsilon = jnp.zeros(rhoM.shape, dtype=jnp.float64)
     else:
         kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
         epsilon = rfu.read_array_from_file(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
-    
 
     Xcoord = rfu.read_array_from_file(os.path.join(read_path ,'xcoord.txt'))
     ####################################################################################
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     script_directory = os.path.dirname(os.path.abspath(__file__))
     setup_logging(level=logging.DEBUG, script_dir=script_directory)
     try:
-        main()
+        main(script_directory)
         logger.info("Script completed successfully")
     except Exception as e:
         logger.error("An error occurred: %s", str(e), exc_info=True)

@@ -5,7 +5,7 @@ from AUTO_DIFF_PACK.logging_util import get_logger,setup_logging
 from AUTO_DIFF_PACK import read_util as rfu
 from AUTO_DIFF_PACK import write_util as wfu
 from AUTO_DIFF_PACK import chem_source_term_functions as cstf
-from AUTO_DIFF_PACK import reg_least_sq_fit as rlsf
+from AUTO_DIFF_PACK import reg_least_sq_fit_simple as rlsf
 import os
 
 logger = get_logger()
@@ -22,13 +22,13 @@ def main():
     with open(filename_Qbar, 'r') as file:
         Q_bar = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
 
-    filename_A = r"./pre-exponential_A.txt"
+    filename_A = r"./A_optimized.txt"
     with open(filename_A, 'r') as file:
         A_arr = jnp.array([float(file.readline().strip())], dtype=jnp.float64)
-    # A = rfu.read_array_from_file(os.path.join(write_path ,'pre_exponential_field.txt'))
 
-    Ea_val = 31.588e3 # cal/mol
-    Ea_val = Ea_val*4.184 # J/mol
+    filename_Ea = r"./Ea_optimized.txt"
+    with open(filename_Ea, 'r') as file:
+        Ea_val = jnp.array([float(file.readline().strip())], dtype=jnp.float64)#J/mol
 
     rho_ref = 0.4237
     T_ref = 800#K
@@ -101,39 +101,6 @@ def main():
     else:
         kappa = rfu.read_array_from_file(os.path.join(read_path ,'TKE.txt')) #Turbulent Kinetic Energy
         epsilon = rfu.read_array_from_file(os.path.join(read_path ,'epsilon.txt')) #Turbulent dissipation rate
-
-    # Read omega_dot_T_LES from file
-    omega_dot_T_LES = rfu.read_array_from_file(os.path.join(read_path, 'HRRbase.txt'))
-    omega_dot_T_LES_rms = rfu.read_array_from_file(os.path.join(read_path, 'HRRrms.txt'))
-    N_samples = 1160
-    
-    # Fit A and Ea using regularized least squares
-    model_uncty = jnp.array(0.01)
-    A_s_init = jnp.array(1.0)
-    Ea_s_init = jnp.array(1.0)
-    init_params = jnp.array([A_s_init, Ea_s_init, model_uncty])
-    lambda_reg = jnp.array(10.0)
-    
-    A_s_opt, Ea_s_opt = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
-                                  A_arr, Ea_val, W_k, nu_k, h_f, kappa, epsilon,
-                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, init_params)
-    
-    logger.info("Completed fitting A and Ea.\n")
-    logger.info("A_s_opt: %.6e", A_s_opt)
-    logger.info("Ea_s_opt: %.6e", Ea_s_opt)
-
-    # Use optimized A and Ea for final calculations
-    A_arr_opt = A_s_opt * A_arr
-    Ea_val_opt = Ea_s_opt * Ea_val
-
-    logger.info("A_arr_opt: %.6e", A_arr_opt)
-    logger.info("Ea_arr_opt: %.6e", Ea_val_opt)
-    
-    del A 
-    del Ea
-
-    A = A_arr_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
-    Ea = Ea_val_opt*jnp.ones(rhoM.shape, dtype=jnp.float64)
 
     species_idx = [1,2,3,4,5] #CH4, O2, CO2, H2O, N2
     omega_dot_k_scaling = (rho_ref*U_ref)/l_ref
