@@ -120,7 +120,7 @@ def main():
     
     A_s_opt, Ea_s_opt, T_c, delta = rlsf.fit_A_and_Ea(rhoM, TM, Y1M, Y2M, Y3M, Y4M, Y5M,
                                   A_arr, Ea_val, W_k, nu_k, h_f, kappa, epsilon,
-                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, st_params)
+                                   omega_dot_T_LES, omega_dot_T_LES_rms, N_samples, lambda_reg, st_params, T_c_st, delta_st)
     
     logger.info("Completed fitting A and Ea.\n")
     logger.info("A_s_opt: %.6e", A_s_opt)
